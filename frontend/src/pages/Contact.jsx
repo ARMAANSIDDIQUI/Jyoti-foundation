@@ -78,6 +78,9 @@ export default function Contact() {
                   <div className="space-y-2">
                     <p className="text-sm text-gray-500 flex items-center gap-2"><Phone className="w-4 h-4" /> +91 98765 43210</p>
                     <p className="text-sm text-gray-500 flex items-center gap-2"><Clock className="w-4 h-4" /> Mon-Sat: 9 AM - 6 PM</p>
+                    <a href="https://drpallaveye.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-2">
+                       drpallaveye.com
+                    </a>
                   </div>
                 </div>
 
@@ -184,8 +187,8 @@ export default function Contact() {
                 <span className="text-sm font-bold text-gray-400 uppercase tracking-widest block">Apollo Laser Eye Hospital</span>
                 <div className="bg-gray-100 rounded-3xl h-64 overflow-hidden shadow-sm border border-gray-200 flex items-center justify-center relative">
                   <iframe 
-                    title="Moradabad Location"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d112108.97486435344!2d78.7188225091497!3d28.832962451310186!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390af96d19ca7b93%3A0xc3f9ad88d8b9432!2sMoradabad%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1710680000000!5m2!1sen!2sin" 
+                    title="Apollo Laser Eye Hospital"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3494.7211898002624!2d78.7604002755087!3d28.847159675548237!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390afbe46c3994fb%3A0x85185eae8b4b93e4!2sApollo%20Laser%20Eye%20Hospital%20-%20Eye%20Hospital%20%2F%20Doctor%2F%20Dr.Pallav%20Agarwal%20%2F%20Specialist%20in%20Moradabad!5e0!3m2!1sen!2sin!4v1773754075712!5m2!1sen!2sin" 
                     className="w-full h-full border-0 grayscale opacity-80" 
                     allowFullScreen="" 
                     loading="lazy"
@@ -197,8 +200,8 @@ export default function Contact() {
                 <span className="text-sm font-bold text-gray-400 uppercase tracking-widest block">Dr Vinod Hospital</span>
                 <div className="bg-gray-100 rounded-3xl h-64 overflow-hidden shadow-sm border border-gray-200 flex items-center justify-center relative">
                   <iframe 
-                    title="Hasanpur Location"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3505.748348880624!2d78.27090547619225!3d28.517188789311654!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390b79560f89d5ef%3A0xb30612999e7f788b!2sHasanpur%2C%20Uttar%20Pradesh%20244241!5e0!3m2!1sen!2sin!4v1710680100000!5m2!1sen!2sin" 
+                    title="Dr Vinod Hospital"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3498.8245046487064!2d78.27934337550421!3d28.72479027561453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390b72a89e5286d5%3A0xa0c8cc344952f611!2sDr%20Vinod%20Hospital!5e0!3m2!1sen!2sin!4v1773754047641!5m2!1sen!2sin" 
                     className="w-full h-full border-0 grayscale opacity-80" 
                     allowFullScreen="" 
                     loading="lazy"

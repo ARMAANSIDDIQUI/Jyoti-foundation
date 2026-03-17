@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   LayoutDashboard, Users, FolderHeart, MessageSquare,
-  LogOut, Plus, Trash2, Edit2, Save, X, Loader2, Check, ExternalLink
+  LogOut, Plus, Trash2, Edit2, Save, X, Loader2, Check, ExternalLink, Image as ImageIcon, Target
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [data, setData] = useState({ members: [], projects: [], contacts: [], stats: [], categories: [] });
+  const [data, setData] = useState({ members: [], projects: [], contacts: [], stats: [], categories: [], heroSlides: [] });
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
@@ -29,19 +29,21 @@ export default function AdminDashboard() {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const [members, projects, contacts] = await Promise.all([
+      const [members, projects, contacts, stats, categories, heroSlides] = await Promise.all([
         fetch(`${API_BASE}/members`).then(r => r.json()),
         fetch(`${API_BASE}/projects`).then(r => r.json()),
         fetch(`${API_BASE}/contact`).then(r => r.json()),
         fetch(`${API_BASE}/stats`).then(r => r.json()),
         fetch(`${API_BASE}/categories`).then(r => r.json()),
+        fetch(`${API_BASE}/hero`).then(r => r.json()),
       ]);
       setData({
         members: Array.isArray(members) ? members : [],
         projects: Array.isArray(projects) ? projects : [],
         contacts: Array.isArray(contacts) ? contacts : [],
         stats: Array.isArray(stats) ? stats : [],
-        categories: Array.isArray(categories) ? categories : []
+        categories: Array.isArray(categories) ? categories : [],
+        heroSlides: Array.isArray(heroSlides) ? heroSlides : []
       });
     } catch (err) {
       console.error('Fetch error:', err);
@@ -71,7 +73,10 @@ export default function AdminDashboard() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const type = activeTab === 'members' ? 'members' : activeTab === 'projects' ? 'projects' : activeTab === 'stats' ? 'stats' : 'categories';
+    const type = activeTab === 'members' ? 'members' : 
+                 activeTab === 'projects' ? 'projects' : 
+                 activeTab === 'stats' ? 'stats' : 
+                 activeTab === 'heroSlides' ? 'hero' : 'categories';
     const method = currentItem._id ? 'PUT' : 'POST';
     const url = currentItem._id ? `${API_BASE}/${type}/${currentItem._id}` : `${API_BASE}/${type}`;
 
@@ -98,6 +103,7 @@ export default function AdminDashboard() {
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
     { id: 'members', label: 'Members', icon: <Users className="w-5 h-5" /> },
     { id: 'projects', label: 'Projects', icon: <FolderHeart className="w-5 h-5" /> },
+    { id: 'heroSlides', label: 'Hero Slides', icon: <ImageIcon className="w-5 h-5" /> },
     { id: 'categories', label: 'Categories', icon: <Target className="w-5 h-5" /> },
     { id: 'stats', label: 'Statistics', icon: <Check className="w-5 h-5" /> },
     { id: 'contacts', label: 'Inquiries', icon: <MessageSquare className="w-5 h-5" /> },
@@ -149,12 +155,17 @@ export default function AdminDashboard() {
             <a href="/" target="_blank" className="bg-white text-gray-600 px-4 py-3 rounded-xl font-medium border border-gray-200 flex items-center gap-2 hover:bg-gray-50 transition-all">
               <ExternalLink className="w-4 h-4" /> View Site
             </a>
-            {(activeTab === 'members' || activeTab === 'projects') && (
+            {(activeTab === 'members' || activeTab === 'projects' || activeTab === 'stats' || activeTab === 'categories' || activeTab === 'heroSlides') && (
               <button
                 onClick={() => { setCurrentItem({}); setShowModal(true); }}
                 className="bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
               >
-                <Plus className="w-5 h-5" /> Add {activeTab === 'members' ? 'Member' : activeTab === 'projects' ? 'Project' : activeTab === 'stats' ? 'Stat' : 'Category'}
+                <Plus className="w-5 h-5" /> Add {
+                  activeTab === 'members' ? 'Member' : 
+                  activeTab === 'projects' ? 'Project' : 
+                  activeTab === 'heroSlides' ? 'Slide' :
+                  activeTab === 'stats' ? 'Stat' : 'Category'
+                }
               </button>
             )}
           </div>
@@ -292,6 +303,48 @@ export default function AdminDashboard() {
                 </table>
               </div>
             )}
+
+            {activeTab === 'categories' && (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-gray-100">
+                      <th className="py-4 font-semibold text-gray-500">Category Name</th>
+                      <th className="py-4 font-semibold text-gray-500">Order</th>
+                      <th className="py-4 font-semibold text-gray-500 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.categories.map((cat) => (
+                      <tr key={cat._id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                        <td className="py-4 font-bold text-text">{cat.name}</td>
+                        <td className="py-4 text-gray-600">#{cat.index}</td>
+                        <td className="py-4 text-right space-x-3">
+                          <button onClick={() => { setCurrentItem(cat); setShowModal(true); }} className="text-gray-400 hover:text-blue-600 transition-colors"><Edit2 className="w-4 h-4" /></button>
+                          <button onClick={() => handleDelete('categories', cat._id)} className="text-gray-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {activeTab === 'heroSlides' && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data.heroSlides.map((slide) => (
+                  <div key={slide._id} className="p-4 bg-gray-50 rounded-3xl border border-gray-100 group relative">
+                    <img src={slide.image} alt={slide.title} className="w-full aspect-video object-cover rounded-2xl mb-4" />
+                    <h3 className="font-bold text-text text-lg mb-1">{slide.title || 'Untitled Slide'}</h3>
+                    <p className="text-gray-500 text-sm mb-4">{slide.subtitle || 'No subtitle'}</p>
+                    <div className="flex gap-2">
+                      <button onClick={() => { setCurrentItem(slide); setShowModal(true); }} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-blue-600"><Edit2 className="w-4 h-4" /></button>
+                      <button onClick={() => handleDelete('hero', slide._id)} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-red-600"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </main>
@@ -314,6 +367,7 @@ export default function AdminDashboard() {
               <h2 className="text-2xl font-bold mb-6 text-text">{currentItem?._id ? 'Edit' : 'Add New'} {
                 activeTab === 'members' ? 'Member' : 
                 activeTab === 'projects' ? 'Project' : 
+                activeTab === 'heroSlides' ? 'Slide' :
                 activeTab === 'stats' ? 'Stat' : 'Category'
               }</h2>
               <form onSubmit={handleSave} className="space-y-4">
@@ -382,6 +436,25 @@ export default function AdminDashboard() {
                     <div>
                       <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Display Order</label>
                       <input type="number" required value={currentItem.index || 0} onChange={e => setCurrentItem({ ...currentItem, index: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
+                    </div>
+                  </>
+                ) : activeTab === 'heroSlides' ? (
+                  <>
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Image URL</label>
+                      <input type="text" required value={currentItem.image || ''} onChange={e => setCurrentItem({ ...currentItem, image: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" placeholder="https://example.com/image.jpg" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Title (Optional)</label>
+                      <input type="text" value={currentItem.title || ''} onChange={e => setCurrentItem({ ...currentItem, title: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Subtitle (Optional)</label>
+                      <input type="text" value={currentItem.subtitle || ''} onChange={e => setCurrentItem({ ...currentItem, subtitle: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Display Order</label>
+                      <input type="number" required value={currentItem.order || 0} onChange={e => setCurrentItem({ ...currentItem, order: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
                     </div>
                   </>
                 ) : (
