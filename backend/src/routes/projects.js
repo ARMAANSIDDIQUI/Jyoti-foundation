@@ -9,10 +9,13 @@ const uploadFields = upload.fields([
   { name: 'video', maxCount: 1 }
 ]);
 
+const auth = require('../middleware/auth');
+
 router.get('/', projectController.getProjects);
-router.post('/', uploadFields, projectController.addProject);
-router.put('/:id', uploadFields, projectController.updateProject);
-router.delete('/:id', projectController.deleteProject);
+router.post('/', auth, uploadFields, projectController.addProject);
+router.put('/:id', auth, uploadFields, projectController.updateProject);
+router.delete('/:id', auth, projectController.deleteProject);
+
 
 module.exports = router;
 

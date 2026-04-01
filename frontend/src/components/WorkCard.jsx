@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function WorkCard({ work, onOpen }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isHindi = i18n.language === 'hi';
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
 
   const displayName = isHindi && work.nameHindi ? work.nameHindi : (work.title || work.name);
   const displayDesc = isHindi && work.descriptionHindi ? work.descriptionHindi : (work.description || work.details);
@@ -66,9 +67,10 @@ export default function WorkCard({ work, onOpen }) {
 
         <div className="absolute top-4 left-4">
           <span className="bg-white/90 backdrop-blur-sm text-primary px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-            {work.category || 'Initiative'}
+            {work.category || t('ourWork.initiative')}
           </span>
         </div>
+
       </div>
 
       <div className="p-6 flex flex-col flex-grow">
@@ -81,8 +83,9 @@ export default function WorkCard({ work, onOpen }) {
             <MapPin className="w-3.5 h-3.5" />
             <span>{displayLoc}</span>
           </div>
-          <button className="text-primary font-bold hover:underline">View Case Study</button>
+          <button className="text-primary font-bold hover:underline">{t('ourWork.viewDetails')}</button>
         </div>
+
       </div>
     </div>
   );

@@ -50,7 +50,48 @@ h1, h2, h3, h4, h5, h6 {
   scrollbar-color: #3A86FF #D1E3FF;
 }
 
-/* Scroll Smoothing */
-html {
-  scroll-behavior: smooth;
+/* Premium Dropdown Design System */
+.dropdown-container {
+  @apply relative inline-block text-left;
 }
+
+.dropdown-menu {
+  @apply absolute right-0 mt-3 w-56 origin-top-right rounded-3xl bg-white/95 backdrop-blur-xl border border-white/50 shadow-[0_20px_50px_-20px_rgba(58,134,255,0.2)] focus:outline-none overflow-hidden z-50;
+  animation: dropdown-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dropdown-item {
+  @apply block px-5 py-3.5 text-sm font-semibold text-gray-600 transition-all duration-200 hover:bg-primary/5 hover:text-primary hover:pl-6 flex items-center gap-3;
+}
+
+.dropdown-divider {
+  @apply my-1 h-px bg-gray-100/80 mx-4;
+}
+
+@keyframes dropdown-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Custom Scrollbar Utility */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3A86FF33;
+  border-radius: 20px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3A86FF66;
+}
+
+

@@ -4,6 +4,8 @@ import { motion } from 'motion/react';
 import { Target, Eye, HeartHandshake } from 'lucide-react';
 import MemberCard from '../components/MemberCard';
 import Counter from '../components/Counter';
+import { members as fallbackMembersData, stats as fallbackStatsData } from '../data/placeholderData';
+
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -13,30 +15,35 @@ const fadeInUp = {
 import { useTranslation } from 'react-i18next';
 
 export default function About() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [memberList, setMemberList] = useState([]);
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
     Promise.all([
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/members`).then(r => r.json()),
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/stats`).then(r => r.json())
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/members`).then(r => r.json()).catch(() => fallbackMembersData),
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/stats`).then(r => r.json()).catch(() => fallbackStatsData)
     ]).then(([membersData, statsData]) => {
-      setMemberList(Array.isArray(membersData) ? membersData : []);
-      setStats(Array.isArray(statsData) ? statsData : []);
+      setMemberList(Array.isArray(membersData) && membersData.length > 0 ? membersData : fallbackMembersData);
+      setStats(Array.isArray(statsData) && statsData.length > 0 ? statsData : fallbackStatsData);
       setLoading(false);
     }).catch(err => {
       console.error('Error fetching about data:', err);
+      setMemberList(fallbackMembersData);
+      setStats(fallbackStatsData);
       setLoading(false);
     });
   }, []);
 
+
+
   const displayMembers = memberList;
 
   return (
-    <div className="pt-12 pb-24">
+    <div className="pt-8 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
@@ -44,13 +51,14 @@ export default function About() {
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
-          className="text-center max-w-3xl mx-auto mb-20"
+          className="text-center max-w-3xl mx-auto mb-12"
         >
-          <h1 className="font-heading text-4xl md:text-5xl font-bold text-text mb-6">About {t('common.organizationName')}</h1>
+          <h1 className="font-heading text-4xl md:text-5xl font-bold text-text mb-6">
+            {t('about.title')}
+          </h1>
           <p className="text-xl text-gray-600 leading-relaxed">
             {t('common.address')} - {t('common.listYear')}
           </p>
-
         </motion.div>
 
         {/* Mission & Vision */}
@@ -65,9 +73,9 @@ export default function About() {
             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <Target className="w-8 h-8 text-primary" />
             </div>
-            <h3 className="font-heading text-2xl font-bold mb-4">Our Mission</h3>
+            <h3 className="font-heading text-2xl font-bold mb-4">{t('about.missionTitle')}</h3>
             <p className="text-gray-600">
-              To eradicate preventable blindness and provide comprehensive, affordable healthcare to underserved communities.
+              {t('about.missionDesc')}
             </p>
           </motion.div>
 
@@ -82,9 +90,9 @@ export default function About() {
             <div className="w-16 h-16 bg-secondary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <Eye className="w-8 h-8 text-primary" />
             </div>
-            <h3 className="font-heading text-2xl font-bold mb-4">Our Vision</h3>
+            <h3 className="font-heading text-2xl font-bold mb-4">{t('about.visionTitle')}</h3>
             <p className="text-gray-600">
-              A world where quality eye care and basic medical services are a right, not a privilege, accessible to everyone regardless of their socio-economic status.
+              {t('about.visionDesc')}
             </p>
           </motion.div>
 
@@ -99,9 +107,9 @@ export default function About() {
             <div className="w-16 h-16 bg-accent/50 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <HeartHandshake className="w-8 h-8 text-orange-600" />
             </div>
-            <h3 className="font-heading text-2xl font-bold mb-4">Our Values</h3>
+            <h3 className="font-heading text-2xl font-bold mb-4">{t('about.valuesTitle')}</h3>
             <p className="text-gray-600">
-              Compassion, Excellence, Integrity, and Community-first approach in every aspect of our medical and humanitarian work.
+              {t('about.valuesDesc')}
             </p>
           </motion.div>
         </div>
@@ -117,7 +125,12 @@ export default function About() {
           >
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 px-8">
               {stats.map((stat) => (
-                <Counter key={stat._id} value={stat.value} label={stat.label} suffix={stat.suffix} />
+                <Counter 
+                  key={stat._id} 
+                  value={stat.value} 
+                  label={i18n.language === 'en' ? stat.label : (stat.labelHindi || stat.label)} 
+                  suffix={stat.suffix} 
+                />
               ))}
             </div>
           </motion.div>
@@ -143,17 +156,11 @@ export default function About() {
             viewport={{ once: true }}
             variants={fadeInUp}
           >
-            <h2 className="font-heading text-3xl font-bold text-text mb-6">Our Journey</h2>
+            <h2 className="font-heading text-3xl font-bold text-text mb-6">{t('about.journeyTitle')}</h2>
             <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
-              <p>
-                Jyoti Foundation began its journey with a simple yet profound goal: to bring light into the lives of those suffering from curable eye diseases. What started as a small initiative has grown into a comprehensive healthcare network.
-              </p>
-              <p>
-                Through the establishment of Apollo Laser Eye Hospital in Moradabad and Dr Vinod Hospital in Hasanpur, we have created permanent centers of excellence that serve thousands of patients annually.
-              </p>
-              <p>
-                Beyond our hospital walls, our outreach programs and free medical camps venture deep into rural areas, ensuring that geographical distance and financial constraints do not prevent anyone from receiving necessary medical care.
-              </p>
+              <p>{t('about.journeyP1')}</p>
+              <p>{t('about.journeyP2')}</p>
+              <p>{t('about.journeyP3')}</p>
             </div>
           </motion.div>
         </div>
@@ -166,12 +173,12 @@ export default function About() {
           variants={fadeInUp}
           className="text-center mb-12"
         >
-          <h2 className="font-heading text-3xl font-bold text-text mb-4">{t('common.managementCommittee')}</h2>
+          <h2 className="font-heading text-3xl font-bold text-text mb-4">{t('about.committeeTitle')}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Meet the dedicated professionals who guide Jyoti Foundation's mission and operations.
+            {t('about.committeeSub')}
           </p>
-
         </motion.div>
+
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {displayMembers.map((member, index) => (

@@ -42,9 +42,19 @@ exports.deleteProject = async (req, res) => {
 
 exports.updateProject = async (req, res) => {
   try {
-    const updated = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const data = { ...req.body };
+    if (req.files) {
+      if (req.files['images']) {
+        data.images = req.files['images'].map(f => f.path);
+      }
+      if (req.files['video']) {
+        data.videoUrl = req.files['video'][0].path;
+      }
+    }
+    const updated = await Project.findByIdAndUpdate(req.params.id, data, { new: true });
     res.status(200).json(updated);
   } catch (error) {
     res.status(500).json({ message: 'Error updating project' });
   }
 };
+

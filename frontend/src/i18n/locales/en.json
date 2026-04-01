@@ -1,16 +1,83 @@
 {
   "common": {
+    "organizationSubtitle": "Jyoti",
     "organizationName": "Jyoti Foundation Sanstha",
     "address": "A-75 Ashiyana, Moradabad",
     "listYear": "List Year: 2025–2026",
-    "managementCommittee": "Management Committee Members",
+    "aboutShort": "A non-profit healthcare foundation dedicated to providing accessible eye care and community medical services to those in need.",
     "nav": {
       "home": "Home",
       "about": "About",
       "projects": "Projects",
       "contact": "Contact",
-      "members": "Members"
+      "members": "Members",
+      "donate": "Donate"
     },
-    "language": "English"
+    "langModal": {
+      "prompt": "क्या आप हिन्दी में सहज हैं?",
+      "action": "हिन्दी में बदलें"
+    }
+  },
+  "home": {
+    "exploreWork": "Explore Our Work",
+    "yearsService": "Years of Service",
+    "sinceYear": "Since 1997",
+    "hospitalsDesc": "Providing world-class healthcare facilities to communities in need through our dedicated medical centers.",
+    "projectsDesc": "Discover how we're making a difference in communities through our various healthcare programs, camps, and ongoing initiatives.",
+    "viewAllProjects": "View All Projects",
+    "ctaTitle1": "Your Support Can",
+    "ctaTitle2": "Restore Vision",
+    "ctaTitle3": "and Transform Lives",
+    "getInvolved": "Get Involved",
+    "heroSuffix": "Compassionate Healthcare"
+  },
+  "about": {
+    "title": "About Jyoti Foundation Sanstha",
+    "missionTitle": "Our Mission",
+    "missionDesc": "To eradicate preventable blindness and provide comprehensive, affordable healthcare to underserved communities.",
+    "visionTitle": "Our Vision",
+    "visionDesc": "A world where quality eye care and basic medical services are a right, not a privilege, accessible to everyone regardless of their socio-economic status.",
+    "valuesTitle": "Our Values",
+    "valuesDesc": "Compassion, Excellence, Integrity, and Community-first approach in every aspect of our medical and humanitarian work.",
+    "journeyTitle": "Our Journey",
+    "journeyP1": "Jyoti Foundation began its journey with a simple yet profound goal: to bring light into the lives of those suffering from curable eye diseases. What started as a small initiative has grown into a comprehensive healthcare network.",
+    "journeyP2": "Through the establishment of Apollo Laser Eye Hospital in Moradabad and Dr Vinod Hospital in Hasanpur, we have created permanent centers of excellence that serve thousands of patients annually.",
+    "journeyP3": "Beyond our hospital walls, our outreach programs and free medical camps venture deep into rural areas, ensuring that geographical distance and financial constraints do not prevent anyone from receiving necessary medical care.",
+    "committeeTitle": "Management Committee Members",
+    "committeeSub": "Meet the dedicated professionals who guide Jyoti Foundation's mission and operations."
+  },
+  "ourWork": {
+    "title": "Our Impact in Action",
+    "subtitle": "Explore our recent initiatives and community outreach programs making a tangible difference.",
+    "noResults": "No results found for this category.",
+    "videoTitle": "Project Video",
+    "all": "All",
+    "initiative": "Initiative",
+    "viewDetails": "View Details"
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "hospitals": "Our Hospitals",
+    "contact": "Contact Us",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Have questions or want to support our mission? We're here to help and would love to hear from you.",
+    "ourLocations": "Our Locations",
+    "monSat": "Mon - Sat: 9:00 AM - 6:00 PM",
+    "emergencyRange": "Emergency: 24/7",
+    "foundationOffice": "Foundation Office",
+    "sendMessage": "Send us a Message",
+    "fullName": "Full Name",
+    "emailAddress": "Email Address",
+    "phoneNumber": "Phone Number",
+    "messageLabel": "Your Message",
+    "sendingAction": "Sending...",
+    "sendAction": "Send Message",
+    "successMsg": "Success! Your message has been sent.",
+    "errorMsg": "Error sending message. Please try again."
   }
 }

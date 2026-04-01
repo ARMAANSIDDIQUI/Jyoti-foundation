@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const statController = require('../controllers/statController');
+const statsController = require('../controllers/statController');
+const auth = require('../middleware/auth');
+const { upload } = require('../config/cloudinary');
 
-router.get('/', statController.getStats);
-router.post('/', statController.addStat);
-router.put('/:id', statController.updateStat);
-router.delete('/:id', statController.deleteStat);
+router.get('/', statsController.getStats);
+router.post('/', auth, upload.none(), statsController.addStat);
+router.put('/:id', auth, upload.none(), statsController.updateStat);
+router.delete('/:id', auth, statsController.deleteStat);
+
 
 module.exports = router;

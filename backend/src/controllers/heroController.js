@@ -11,7 +11,11 @@ exports.getSlides = async (req, res) => {
 
 exports.addSlide = async (req, res) => {
   try {
-    const slide = new HeroSlide(req.body);
+    const data = { ...req.body };
+    if (req.file) {
+      data.image = req.file.path;
+    }
+    const slide = new HeroSlide(data);
     const newSlide = await slide.save();
     res.status(201).json(newSlide);
   } catch (err) {
@@ -21,12 +25,17 @@ exports.addSlide = async (req, res) => {
 
 exports.updateSlide = async (req, res) => {
   try {
-    const updatedSlide = await HeroSlide.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const data = { ...req.body };
+    if (req.file) {
+      data.image = req.file.path;
+    }
+    const updatedSlide = await HeroSlide.findByIdAndUpdate(req.params.id, data, { new: true });
     res.json(updatedSlide);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
+
 
 exports.deleteSlide = async (req, res) => {
   try {

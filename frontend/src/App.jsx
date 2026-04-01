@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
+import { AuthProvider } from './context/AuthContext';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -10,12 +11,23 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/AdminLogin';
+import ScrollToTop from './components/ScrollToTop';
+import ScrollToTopButton from './components/ScrollToTopButton';
+
+
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
+
   return (
-    <LanguageProvider>
+    <AuthProvider>
+      <LanguageProvider>
+
       <Router>
+        <ScrollToTop />
+        <ScrollToTopButton />
         <Routes>
+
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
@@ -26,10 +38,16 @@ export default function App() {
             <Route path="terms" element={<TermsOfService />} />
           </Route>
           <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          </Route>
+
         </Routes>
+
       </Router>
     </LanguageProvider>
+  </AuthProvider>
   );
 }
+
 

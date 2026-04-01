@@ -19,7 +19,7 @@ export default function HospitalCard({ hospital }) {
         />
         <div className="absolute top-4 left-4">
           <span className="bg-white/90 backdrop-blur-sm text-primary px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
-            {hospital.type}
+            {isHindi && hospital.typeHindi ? hospital.typeHindi : hospital.type}
           </span>
         </div>
       </div>
@@ -38,11 +38,12 @@ export default function HospitalCard({ hospital }) {
             <span>{hospital.phone}</span>
           </div>
           <div className="flex items-center gap-3 text-sm text-gray-600">
-            <MessageSquare className="w-5 h-5 text-primary shrink-0" />
-            <span>{hospital.services}</span>
+            <Phone className="w-5 h-5 text-primary shrink-0 rotate-90" />
+            <span>{isHindi && hospital.servicesHindi ? hospital.servicesHindi : hospital.services}</span>
           </div>
         </div>
       </div>
+
     </div>
   );
 }

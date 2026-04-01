@@ -1,15 +1,24 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 import { Lock, Mail, Loader2 } from 'lucide-react';
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(localStorage.getItem('rememberedEmail') || '');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(!!localStorage.getItem('rememberedEmail'));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,7 +35,12 @@ export default function AdminLogin() {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('adminToken', data.adminId);
+        if (rememberMe) {
+          localStorage.setItem('rememberedEmail', email);
+        } else {
+          localStorage.removeItem('rememberedEmail');
+        }
+        login(data.admin, data.token);
         navigate('/admin/dashboard');
       } else {
         setError(data.message || 'Invalid credentials');
@@ -37,6 +51,7 @@ export default function AdminLogin() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -87,15 +102,29 @@ export default function AdminLogin() {
               />
             </div>
           </div>
+          
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-5 h-5 rounded-lg border-gray-200 text-primary focus:ring-primary/20 accent-primary"
+              />
+              <span className="text-sm text-gray-600 group-hover:text-text transition-colors">Remember my email</span>
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 flex items-center justify-center gap-2"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Access Dashboard'}
           </button>
         </form>
       </motion.div>
     </div>
+
   );
 }

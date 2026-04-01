@@ -4,8 +4,9 @@ import { ArrowRight, HeartPulse, Heart } from 'lucide-react';
 import Counter from '../components/Counter';
 import HospitalCard from '../components/HospitalCard';
 import WorkCard from '../components/WorkCard';
-import { hospitals, workActivities } from '../data/placeholderData';
+import { hospitals, workActivities, stats as fallbackStats } from '../data/placeholderData';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -20,28 +21,41 @@ const staggerContainer = {
   }
 };
 
-import { useTranslation } from 'react-i18next';
-
 export default function Home() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [stats, setStats] = useState([]);
   const [heroSlides, setHeroSlides] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     // Fetch stats
     fetch(`${import.meta.env.VITE_API_BASE_URL}/stats`)
       .then(r => r.json())
-      .then(data => setStats(Array.isArray(data) ? data : []))
-      .catch(err => console.error('Error fetching stats:', err));
+      .then(data => setStats(Array.isArray(data) && data.length > 0 ? data : fallbackStats))
+      .catch(err => {
+        console.error('Error fetching stats:', err);
+        setStats(fallbackStats);
+      });
+
+    // Fetch projects for initiatives
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/projects`)
+      .then(r => r.json())
+      .then(data => setProjects(Array.isArray(data) && data.length > 0 ? data.slice(0, 4) : workActivities.slice(0, 4)))
+      .catch(err => {
+        console.error('Error fetching projects:', err);
+        setProjects(workActivities.slice(0, 4));
+      });
 
     // Fetch hero slides
     fetch(`${import.meta.env.VITE_API_BASE_URL}/hero`)
       .then(r => r.json())
-      .then(data => setHeroSlides(Array.isArray(data) ? data : []))
+      .then(data => setHeroSlides(Array.isArray(data) && data.length > 0 ? data : []))
       .catch(err => console.error('Error fetching hero slides:', err));
   }, []);
+
+
 
   // Auto-play carousel
   useEffect(() => {
@@ -55,7 +69,7 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative pt-4 pb-32 lg:pt-12 lg:pb-40 overflow-hidden">
+      <section className="relative pt-4 pb-24 lg:pt-8 lg:pb-32 overflow-hidden">
         {/* Background shapes - More distinct bluish dark */}
         <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[800px] h-[800px] bg-[#3A86FF]/20 rounded-full blur-[120px] -z-10" />
         <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[600px] h-[600px] bg-[#8EC5FC]/40 rounded-full blur-[120px] -z-10" />
@@ -74,7 +88,7 @@ export default function Home() {
               </motion.div>
               <motion.h1 variants={fadeInUp} className="font-heading text-5xl lg:text-6xl font-bold text-text leading-tight mb-6">
                 {t('common.organizationName')} <br />
-                <span className="text-primary italic">Compassionate Healthcare</span>
+                <span className="text-primary italic">{t('home.heroSuffix')}</span>
               </motion.h1>
               <motion.p variants={fadeInUp} className="text-lg text-gray-600 mb-8 leading-relaxed">
                 {t('common.address')} - {t('common.listYear')}
@@ -85,15 +99,16 @@ export default function Home() {
                   to="/donate"
                   className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-medium transition-all shadow-md hover:shadow-lg flex items-center gap-2"
                 >
-                  Donate Now <ArrowRight className="w-5 h-5" />
+                  {t('common.nav.donate')} <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link
                   to="/our-work"
                   className="bg-white hover:bg-gray-50 text-text border border-gray-200 px-8 py-4 rounded-full font-medium transition-all shadow-sm flex items-center gap-2"
                 >
-                  Explore Our Work
+                  {t('home.exploreWork')}
                 </Link>
               </motion.div>
+
             </motion.div>
 
             <motion.div
@@ -153,9 +168,10 @@ export default function Home() {
                     25+
                   </div>
                   <div>
-                    <div className="font-bold text-text">Years of Service</div>
-                    <div className="text-sm text-gray-500">Since 1997</div>
+                    <div className="font-bold text-text">{t('home.yearsService')}</div>
+                    <div className="text-sm text-gray-500">{t('home.sinceYear')}</div>
                   </div>
+
                 </div>
               </motion.div>
             </motion.div>
@@ -163,19 +179,36 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Impact Statistics */}
-      <section className="py-16 bg-white border-y border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {stats.map((stat) => (
-              <Counter key={stat._id} value={stat.value} label={stat.label} suffix={stat.suffix} />
-            ))}
-          </div>
+      {/* Statistics Section */}
+      <section className="relative py-12 z-30 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-white/70 backdrop-blur-2xl border border-white/40 rounded-[3rem] p-8 md:p-12 shadow-[0_32px_64px_-16px_rgba(30,58,138,0.15)] overflow-hidden relative"
+          >
+            {/* Background pattern for stats */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />
+            
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+              {stats.map((stat, i) => (
+                <Counter 
+                  key={i}
+                  value={stat.value ? String(stat.value).replace(/[^0-9]/g, '') : '0'} 
+                  label={stat.label}
+                  suffix={stat.suffix || '+'}
+                  duration={2}
+                />
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Hospitals Section */}
-      <section className="py-24 bg-background">
+      {/* Hospitals Section - Correctly Labeled as Medical Centers */}
+
+      <section className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -184,9 +217,9 @@ export default function Home() {
             variants={fadeInUp}
             className="text-center max-w-2xl mx-auto mb-16"
           >
-            <h2 className="font-heading text-4xl font-bold text-text mb-4">{t('common.nav.projects')}</h2>
+            <h2 className="font-heading text-4xl font-bold text-text mb-4">{t('footer.hospitals')}</h2>
             <p className="text-gray-600 text-lg">
-              Providing world-class healthcare facilities to communities in need through our dedicated medical centers.
+              {t('home.hospitalsDesc')}
             </p>
 
           </motion.div>
@@ -210,55 +243,60 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Our Work Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={fadeInUp}
-              className="max-w-2xl"
-            >
-              <h2 className="font-heading text-4xl font-bold text-text mb-4">Recent Initiatives</h2>
-              <p className="text-gray-600 text-lg">
-                Discover how we're making a difference in communities through our various healthcare programs and camps.
-              </p>
-            </motion.div>
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeInUp}
-            >
-              <Link
-                to="/our-work"
-                className="inline-flex items-center gap-2 text-primary font-medium hover:text-primary/80 transition-colors"
-              >
-                View All Work <ArrowRight className="w-5 h-5" />
-              </Link>
-            </motion.div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {workActivities.slice(0, 4).map((work, index) => (
+      {/* Our Work Section - Swapped to fetch from projects */}
+      {projects.length > 0 && (
+        <section className="py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <motion.div
-                key={work.id}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, margin: "-50px" }}
-                variants={{
-                  hidden: { opacity: 0, y: 40 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: index * 0.1 } }
-                }}
+                viewport={{ once: true, margin: "-100px" }}
+                variants={fadeInUp}
+                className="max-w-2xl"
               >
-                <WorkCard work={work} />
+                <h2 className="font-heading text-4xl font-bold text-text mb-4">{t('common.nav.projects')}</h2>
+                <p className="text-gray-600 text-lg">
+                  {t('home.projectsDesc')}
+                </p>
+
               </motion.div>
-            ))}
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeInUp}
+              >
+                <Link
+                  to="/our-work"
+                  className="inline-flex items-center gap-2 text-primary font-medium hover:text-primary/80 transition-colors"
+                >
+                  {t('home.viewAllProjects')} <ArrowRight className="w-5 h-5" />
+                </Link>
+
+              </motion.div>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {projects.map((project, index) => (
+                <motion.div
+                  key={project._id}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={{
+                    hidden: { opacity: 0, y: 40 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: index * 0.1 } }
+                  }}
+                >
+                  <WorkCard work={project} />
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
 
       {/* Premium CTA Section */}
       <section className="py-24 relative overflow-hidden bg-white">
@@ -284,11 +322,12 @@ export default function Home() {
               className="relative z-10"
             >
               <motion.h2 variants={fadeInUp} className="font-heading text-4xl md:text-6xl font-extrabold text-[#111827] mb-8 leading-[1.1]">
-                Your Support Can <span className="text-primary italic">Restore Vision</span> <br className="hidden md:block" /> and Transform Lives
+                {t('home.ctaTitle1')} <span className="text-primary italic">{t('home.ctaTitle2')}</span> <br className="hidden md:block" /> {t('home.ctaTitle3')}
               </motion.h2>
               <motion.p variants={fadeInUp} className="text-[#374151] text-lg md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
                 {t('common.organizationName')} - {t('common.address')}
               </motion.p>
+
 
               
               <motion.div variants={fadeInUp} className="flex flex-wrap justify-center items-center gap-6">
@@ -297,14 +336,15 @@ export default function Home() {
                   className="group bg-primary text-white hover:bg-primary/90 px-12 py-5 rounded-[1.5rem] font-black text-xl transition-all shadow-xl shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1 flex items-center gap-3"
                 >
                   <Heart className="w-6 h-6 fill-white group-hover:scale-110 transition-transform" />
-                  Donate Now
+                  {t('common.nav.donate')}
                 </Link>
                 <Link
                   to="/contact"
                   className="bg-white/80 backdrop-blur-md text-[#111827] border border-gray-100 px-12 py-5 rounded-[1.5rem] font-black text-xl hover:bg-white hover:-translate-y-1 transition-all shadow-lg"
                 >
-                  Get Involved
+                  {t('home.getInvolved')}
                 </Link>
+
               </motion.div>
             </motion.div>
           </motion.div>
