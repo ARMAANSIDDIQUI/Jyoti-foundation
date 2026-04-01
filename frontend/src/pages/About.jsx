@@ -124,9 +124,9 @@ export default function About() {
             className="mb-24 py-16 bg-white rounded-[3rem] shadow-sm border border-gray-50"
           >
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 px-8">
-              {stats.map((stat) => (
+              {stats.map((stat, index) => (
                 <Counter 
-                  key={stat._id} 
+                  key={stat._id || stat.id || index} 
                   value={stat.value} 
                   label={i18n.language === 'en' ? stat.label : (stat.labelHindi || stat.label)} 
                   suffix={stat.suffix} 
@@ -183,7 +183,7 @@ export default function About() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {displayMembers.map((member, index) => (
             <motion.div
-              key={member.id}
+              key={member._id || member.id || index}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}

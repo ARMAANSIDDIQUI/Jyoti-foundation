@@ -118,16 +118,16 @@ export default function Home() {
               className="relative lg:ml-auto w-full max-w-[600px]"
             >
               <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white aspect-[4/3] bg-gray-100">
-                <AnimatePresence mode="wait">
+                <AnimatePresence>
                   {heroSlides.length > 0 ? (
                     <motion.img
                       key={currentSlide}
                       src={heroSlides[currentSlide]?.image}
                       alt={heroSlides[currentSlide]?.title || "Hero Image"}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.8, ease: "easeInOut" }}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
                   ) : (

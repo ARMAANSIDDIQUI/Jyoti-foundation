@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Calendar, MapPin, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
+import { Link } from 'react-router-dom';
+import { generateSlug } from '../utils/slugify';
 
-export default function WorkCard({ work, onOpen }) {
+export default function WorkCard({ work }) {
   const { t, i18n } = useTranslation();
   const isHindi = i18n.language === 'hi';
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -16,18 +18,20 @@ export default function WorkCard({ work, onOpen }) {
   const images = work.images && work.images.length > 0 ? work.images : ['/images/eye_camp.png'];
 
   const nextImage = (e) => {
+    e.preventDefault();
     e.stopPropagation();
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
   const prevImage = (e) => {
+    e.preventDefault();
     e.stopPropagation();
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
   return (
-    <div 
-      onClick={() => onOpen(work)}
+    <Link 
+      to={`/projects/${generateSlug(work.name)}`}
       className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 group hover:shadow-lg transition-all duration-300 flex flex-col h-full cursor-pointer"
     >
       <div className="relative h-56 overflow-hidden bg-gray-100">
@@ -87,6 +91,6 @@ export default function WorkCard({ work, onOpen }) {
         </div>
 
       </div>
-    </div>
+    </Link>
   );
 }
