@@ -1,0 +1,16 @@
+{
+  "common": {
+    "organizationName": "Jyoti Foundation Sanstha",
+    "address": "A-75 Ashiyana, Moradabad",
+    "listYear": "List Year: 2025–2026",
+    "managementCommittee": "Management Committee Members",
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "projects": "Projects",
+      "contact": "Contact",
+      "members": "Members"
+    },
+    "language": "English"
+  }
+}

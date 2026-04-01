@@ -80,11 +80,24 @@ export default function AdminDashboard() {
     const method = currentItem._id ? 'PUT' : 'POST';
     const url = currentItem._id ? `${API_BASE}/${type}/${currentItem._id}` : `${API_BASE}/${type}`;
 
+    // Create FormData for multi-part form data (files + fields)
+    const formData = new FormData();
+    Object.keys(currentItem).forEach(key => {
+      if (key === 'image' && currentItem.imageFile) {
+        formData.append('image', currentItem.imageFile);
+      } else if (key === 'images' && currentItem.imageFiles) {
+        currentItem.imageFiles.forEach(file => formData.append('images', file));
+      } else if (key === 'video' && currentItem.videoFile) {
+        formData.append('video', currentItem.videoFile);
+      } else {
+        formData.append(key, currentItem[key]);
+      }
+    });
+
     try {
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(currentItem)
+        body: formData // No Content-Type header needed, browser sets it for FormData
       });
 
       if (response.ok) {
@@ -92,12 +105,14 @@ export default function AdminDashboard() {
         setCurrentItem(null);
         fetchAllData();
       } else {
-        alert('Failed to save');
+        const errData = await response.json();
+        alert(`Failed to save: ${errData.message || 'Unknown error'}`);
       }
     } catch (err) {
       alert('Error saving');
     }
   };
+
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
@@ -213,24 +228,34 @@ export default function AdminDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="border-b border-gray-100">
-                      <th className="py-4 font-semibold text-gray-500">Index</th>
-                      <th className="py-4 font-semibold text-gray-500">Name</th>
-                      <th className="py-4 font-semibold text-gray-500">Position</th>
-                      <th className="py-4 font-semibold text-gray-500 text-right">Actions</th>
+                    <tr className="border-b border-gray-100 text-xs text-gray-500">
+                      <th className="py-4 font-semibold px-4">Photo</th>
+                      <th className="py-4 font-semibold">Name (EN/HI)</th>
+                      <th className="py-4 font-semibold">Position</th>
+                      <th className="py-4 font-semibold text-right px-4">Actions</th>
                     </tr>
+
                   </thead>
                   <tbody>
                     {data.members.map((member) => (
-                      <tr key={member._id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                        <td className="py-4 text-gray-600">#{member.index}</td>
-                        <td className="py-4 font-bold text-text">{member.name}</td>
-                        <td className="py-4 text-primary font-medium">{member.post}</td>
-                        <td className="py-4 text-right space-x-3">
-                          <button onClick={() => { setCurrentItem(member); setShowModal(true); }} className="text-gray-400 hover:text-blue-600 transition-colors"><Edit2 className="w-4 h-4" /></button>
-                          <button onClick={() => handleDelete('members', member._id)} className="text-gray-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      <tr key={member._id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                        <td className="py-4 px-4">
+                           <img src={member.image || 'https://via.placeholder.com/40'} className="w-10 h-10 rounded-full object-cover border border-gray-200" alt="" />
+                        </td>
+                        <td className="py-4">
+                           <div className="font-bold text-text">{member.name}</div>
+                           <div className="text-[10px] text-gray-400 font-medium">{member.nameHindi}</div>
+                        </td>
+                        <td className="py-4">
+                           <div className="text-primary font-bold text-xs uppercase tracking-tight">{member.post}</div>
+                           <div className="text-[10px] text-gray-400">{member.postHindi}</div>
+                        </td>
+                        <td className="py-4 text-right px-4 space-x-2">
+                          <button onClick={() => { setCurrentItem(member); setShowModal(true); }} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"><Edit2 className="w-4 h-4" /></button>
+                          <button onClick={() => handleDelete('members', member._id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"><Trash2 className="w-4 h-4" /></button>
                         </td>
                       </tr>
+
                     ))}
                   </tbody>
                 </table>
@@ -244,10 +269,18 @@ export default function AdminDashboard() {
                     <h3 className="font-bold text-text text-lg mb-2">{project.name}</h3>
                     <p className="text-gray-500 text-sm mb-4">{project.location}</p>
                     <p className="text-gray-600 text-sm line-clamp-3 mb-4">{project.description}</p>
-                    <div className="flex gap-2">
-                      <button onClick={() => { setCurrentItem(project); setShowModal(true); }} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-blue-600"><Edit2 className="w-4 h-4" /></button>
-                      <button onClick={() => handleDelete('projects', project._id)} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-red-600"><Trash2 className="w-4 h-4" /></button>
+                    <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100">
+                      <div className="flex gap-3 text-[10px] font-bold uppercase text-gray-400">
+                         {project.images?.length > 0 && <span className="flex items-center gap-1"><ImageIcon className="w-3 h-3" /> {project.images.length}</span>}
+                         {project.videoUrl && <span className="flex items-center gap-1 text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded-md"><Play className="w-3 h-3 fill-current" /> VD</span>}
+                         {project.youtubeUrl && <span className="flex items-center gap-1 text-red-500 bg-red-50 px-1.5 py-0.5 rounded-md"><Plus className="w-3 h-3" /> YT</span>}
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => { setCurrentItem(project); setShowModal(true); }} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-blue-600 hover:bg-blue-50 transition-all"><Edit2 className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete('projects', project._id)} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-red-600 hover:bg-red-50 transition-all"><Trash2 className="w-4 h-4" /></button>
+                      </div>
                     </div>
+
                   </div>
                 ))}
               </div>
@@ -373,52 +406,90 @@ export default function AdminDashboard() {
               <form onSubmit={handleSave} className="space-y-4">
                 {activeTab === 'members' ? (
                   <>
-                    <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Full Name</label>
-                      <input type="text" required value={currentItem.name || ''} onChange={e => setCurrentItem({ ...currentItem, name: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Name (EN)</label>
+                        <input type="text" required value={currentItem.name || ''} onChange={e => setCurrentItem({ ...currentItem, name: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Name (HI)</label>
+                        <input type="text" required value={currentItem.nameHindi || ''} onChange={e => setCurrentItem({ ...currentItem, nameHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Post (EN)</label>
+                        <input type="text" required value={currentItem.post || ''} onChange={e => setCurrentItem({ ...currentItem, post: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Post (HI)</label>
+                        <input type="text" required value={currentItem.postHindi || ''} onChange={e => setCurrentItem({ ...currentItem, postHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Role / Designation</label>
-                      <input type="text" required value={currentItem.role || ''} onChange={e => setCurrentItem({ ...currentItem, role: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Profile Image</label>
+                      <input type="file" accept="image/*" onChange={e => setCurrentItem({ ...currentItem, imageFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90" />
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Display Order</label>
-                      <input type="number" required value={currentItem.index || 0} onChange={e => setCurrentItem({ ...currentItem, index: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Display Order</label>
+                      <input type="number" required value={currentItem.index || 0} onChange={e => setCurrentItem({ ...currentItem, index: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
                     </div>
                   </>
                 ) : activeTab === 'projects' ? (
                   <>
-                    <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Title / Name</label>
-                      <input type="text" required value={currentItem.name || ''} onChange={e => setCurrentItem({ ...currentItem, name: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Title (EN)</label>
+                        <input type="text" required value={currentItem.name || ''} onChange={e => setCurrentItem({ ...currentItem, name: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Title (HI)</label>
+                        <input type="text" required value={currentItem.nameHindi || ''} onChange={e => setCurrentItem({ ...currentItem, nameHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Location (EN)</label>
+                        <input type="text" required value={currentItem.location || ''} onChange={e => setCurrentItem({ ...currentItem, location: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Location (HI)</label>
+                        <input type="text" required value={currentItem.locationHindi || ''} onChange={e => setCurrentItem({ ...currentItem, locationHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Location</label>
-                      <input type="text" required value={currentItem.location || ''} onChange={e => setCurrentItem({ ...currentItem, location: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Project Images (Max 3)</label>
+                      <input type="file" multiple accept="image/*" onChange={e => setCurrentItem({ ...currentItem, imageFiles: Array.from(e.target.files).slice(0, 3) })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Cloudinary Video</label>
+                        <input type="file" accept="video/*" onChange={e => setCurrentItem({ ...currentItem, videoFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">YouTube Link</label>
+                        <input type="text" placeholder="https://youtube.com/..." value={currentItem.youtubeUrl || ''} onChange={e => setCurrentItem({ ...currentItem, youtubeUrl: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="col-span-2">
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Category</label>
+                        <select required value={currentItem.category || ''} onChange={e => setCurrentItem({ ...currentItem, category: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none">
+                          <option value="">Select Category</option>
+                          {data.categories.map(cat => <option key={cat._id} value={cat.name}>{cat.name}</option>)}
+                        </select>
+                      </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Category</label>
-                      <select 
-                        required 
-                        value={currentItem.category || ''} 
-                        onChange={e => setCurrentItem({ ...currentItem, category: e.target.value })} 
-                        className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none"
-                      >
-                        <option value="">Select Category</option>
-                        {data.categories.map(cat => (
-                          <option key={cat._id} value={cat.name}>{cat.name}</option>
-                        ))}
-                      </select>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
+                      <textarea required value={currentItem.description || ''} onChange={e => setCurrentItem({ ...currentItem, description: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 h-20 resize-none" />
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Short Description</label>
-                      <textarea required value={currentItem.description || ''} onChange={e => setCurrentItem({ ...currentItem, description: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none h-24 resize-none" />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Full Details</label>
-                      <textarea required value={currentItem.details || ''} onChange={e => setCurrentItem({ ...currentItem, details: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none h-32 resize-none" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (HI)</label>
+                      <textarea required value={currentItem.descriptionHindi || ''} onChange={e => setCurrentItem({ ...currentItem, descriptionHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 h-20 resize-none" />
                     </div>
                   </>
+
                 ) : activeTab === 'stats' ? (
                   <>
                     <div>

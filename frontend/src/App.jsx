@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { LanguageProvider } from './context/LanguageContext';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -12,20 +13,23 @@ import AdminLogin from './pages/AdminLogin';
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="our-work" element={<OurWork />} />
-          <Route path="donate" element={<Donate />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="privacy" element={<PrivacyPolicy />} />
-          <Route path="terms" element={<TermsOfService />} />
-        </Route>
-        <Route path="/admin" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      </Routes>
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="our-work" element={<OurWork />} />
+            <Route path="donate" element={<Donate />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="privacy" element={<PrivacyPolicy />} />
+            <Route path="terms" element={<TermsOfService />} />
+          </Route>
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        </Routes>
+      </Router>
+    </LanguageProvider>
   );
 }
+

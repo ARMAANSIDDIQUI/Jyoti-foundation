@@ -1,17 +1,20 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, Menu, X } from 'lucide-react';
+import { Heart, Menu, X, Globe } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageToggle from './LanguageToggle';
 
 const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-  { name: 'Our Work', path: '/our-work' },
-  { name: 'Contact', path: '/contact' }
+  { key: 'home', path: '/' },
+  { key: 'about', path: '/about' },
+  { key: 'projects', path: '/our-work' },
+  { key: 'contact', path: '/contact' }
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { t } = useTranslation();
 
   return (
     <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
@@ -23,34 +26,41 @@ export default function Navbar() {
                 <Heart className="w-6 h-6 text-white" />
               </div>
               <span className="font-heading font-bold text-2xl text-text tracking-tight">
-                Jyoti
+                {t('common.organizationName').split(' ')[0]}
               </span>
             </Link>
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-6 mr-4 border-r border-gray-100 pr-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`text-sm font-medium transition-colors ${
+                    location.pathname === link.path ? 'text-primary' : 'text-gray-600 hover:text-primary'
+                  }`}
+                >
+                  {t(`common.nav.${link.key}`)}
+                </Link>
+              ))}
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <LanguageToggle />
               <Link
-                key={link.path}
-                to={link.path}
-                className={`text-sm font-medium transition-colors ${
-                  location.pathname === link.path ? 'text-primary' : 'text-gray-600 hover:text-primary'
-                }`}
+                to="/donate"
+                className="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-md hover:shadow-lg transition-all"
               >
-                {link.name}
+                Donate
               </Link>
-            ))}
-            <Link
-              to="/donate"
-              className="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-md hover:shadow-lg transition-all"
-            >
-              Donate
-            </Link>
+            </div>
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center gap-4">
+            <LanguageToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-gray-600 hover:text-primary p-2"
@@ -72,7 +82,7 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className="block px-3 py-4 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-xl"
               >
-                {link.name}
+                {t(`common.nav.${link.key}`)}
               </Link>
             ))}
             <div className="pt-4 px-3">
@@ -90,3 +100,4 @@ export default function Navbar() {
     </nav>
   );
 }
+

@@ -20,7 +20,11 @@ const staggerContainer = {
   }
 };
 
+import { useTranslation } from 'react-i18next';
+
 export default function Home() {
+  const { t } = useTranslation();
+
   const [stats, setStats] = useState([]);
   const [heroSlides, setHeroSlides] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -66,14 +70,16 @@ export default function Home() {
             >
               <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm border border-gray-100 text-primary font-medium text-sm mb-6">
                 <HeartPulse className="w-4 h-4" />
-                Non-Profit Healthcare Foundation
+                {t('common.nav.home')}
               </motion.div>
               <motion.h1 variants={fadeInUp} className="font-heading text-5xl lg:text-6xl font-bold text-text leading-tight mb-6">
-                Bringing Light Through <span className="text-primary">Compassionate</span> Healthcare
+                {t('common.organizationName')} <br />
+                <span className="text-primary italic">Compassionate Healthcare</span>
               </motion.h1>
               <motion.p variants={fadeInUp} className="text-lg text-gray-600 mb-8 leading-relaxed">
-                Jyoti Foundation works to provide accessible eye care and community healthcare through hospitals, medical camps, and humanitarian outreach programs.
+                {t('common.address')} - {t('common.listYear')}
               </motion.p>
+
               <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
                 <Link
                   to="/donate"
@@ -178,10 +184,11 @@ export default function Home() {
             variants={fadeInUp}
             className="text-center max-w-2xl mx-auto mb-16"
           >
-            <h2 className="font-heading text-4xl font-bold text-text mb-4">Our Hospitals</h2>
+            <h2 className="font-heading text-4xl font-bold text-text mb-4">{t('common.nav.projects')}</h2>
             <p className="text-gray-600 text-lg">
               Providing world-class healthcare facilities to communities in need through our dedicated medical centers.
             </p>
+
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
@@ -280,8 +287,9 @@ export default function Home() {
                 Your Support Can <span className="text-primary italic">Restore Vision</span> <br className="hidden md:block" /> and Transform Lives
               </motion.h2>
               <motion.p variants={fadeInUp} className="text-[#374151] text-lg md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-                Every contribution helps us reach more people in need of <span className="text-[#111827] font-bold underline decoration-primary/30">critical eye care</span> and medical attention. Join our mission today.
+                {t('common.organizationName')} - {t('common.address')}
               </motion.p>
+
               
               <motion.div variants={fadeInUp} className="flex flex-wrap justify-center items-center gap-6">
                 <Link

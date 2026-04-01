@@ -11,14 +11,25 @@ exports.getProjects = async (req, res) => {
 
 exports.addProject = async (req, res) => {
   try {
-    const { name, location, description, details, images } = req.body;
-    const newProject = new Project({ name, location, description, details, images });
+    const { name, nameHindi, location, locationHindi, description, descriptionHindi, details, detailsHindi, category, youtubeUrl } = req.body;
+    
+    // Extract uploaded files
+    const images = req.files['images'] ? req.files['images'].map(f => f.path) : [];
+    const videoUrl = req.files['video'] ? req.files['video'][0].path : undefined;
+
+    const newProject = new Project({
+      name, nameHindi, location, locationHindi, description, descriptionHindi, details, detailsHindi, category,
+      images, videoUrl, youtubeUrl
+    });
+    
     await newProject.save();
     res.status(201).json(newProject);
   } catch (error) {
     res.status(500).json({ message: 'Error adding project' });
   }
 };
+
+
 
 exports.deleteProject = async (req, res) => {
   try {

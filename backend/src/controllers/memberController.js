@@ -11,8 +11,12 @@ exports.getMembers = async (req, res) => {
 
 exports.addMember = async (req, res) => {
   try {
-    const { name, post, index } = req.body;
-    const newMember = new Member({ name, post, index });
+    const { name, nameHindi, post, postHindi, occupation, occupationHindi, index } = req.body;
+    const image = req.file ? req.file.path : undefined;
+
+    const newMember = new Member({
+      name, nameHindi, post, postHindi, occupation, occupationHindi, index, image
+    });
     await newMember.save();
     res.status(201).json(newMember);
   } catch (error) {
@@ -31,7 +35,11 @@ exports.deleteMember = async (req, res) => {
 
 exports.updateMember = async (req, res) => {
   try {
-    const updated = await Member.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const data = { ...req.body };
+    if (req.file) {
+      data.image = req.file.path;
+    }
+    const updated = await Member.findByIdAndUpdate(req.params.id, data, { new: true });
     res.status(200).json(updated);
   } catch (error) {
     res.status(500).json({ message: 'Error updating member' });

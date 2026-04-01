@@ -10,7 +10,11 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 };
 
+import { useTranslation } from 'react-i18next';
+
 export default function About() {
+  const { t } = useTranslation();
+
   const [memberList, setMemberList] = useState([]);
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,10 +46,11 @@ export default function About() {
           variants={fadeInUp}
           className="text-center max-w-3xl mx-auto mb-20"
         >
-          <h1 className="font-heading text-4xl md:text-5xl font-bold text-text mb-6">About Jyoti Foundation</h1>
+          <h1 className="font-heading text-4xl md:text-5xl font-bold text-text mb-6">About {t('common.organizationName')}</h1>
           <p className="text-xl text-gray-600 leading-relaxed">
-            Dedicated to illuminating lives through accessible, high-quality healthcare and compassionate community service.
+            {t('common.address')} - {t('common.listYear')}
           </p>
+
         </motion.div>
 
         {/* Mission & Vision */}
@@ -161,10 +166,11 @@ export default function About() {
           variants={fadeInUp}
           className="text-center mb-12"
         >
-          <h2 className="font-heading text-3xl font-bold text-text mb-4">Our Leadership Team</h2>
+          <h2 className="font-heading text-3xl font-bold text-text mb-4">{t('common.managementCommittee')}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Meet the dedicated professionals who guide Jyoti Foundation's mission and operations.
           </p>
+
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
