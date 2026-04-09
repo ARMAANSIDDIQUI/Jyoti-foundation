@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { Target, Eye, HeartHandshake } from 'lucide-react';
 import MemberCard from '../components/MemberCard';
 import Counter from '../components/Counter';
+import API_BASE_URL from '../utils/api.js';
 import { members as fallbackMembersData, stats as fallbackStatsData } from '../data/placeholderData';
 
 
@@ -24,8 +25,8 @@ export default function About() {
   useEffect(() => {
 
     Promise.all([
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/members`).then(r => r.json()).catch(() => fallbackMembersData),
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/stats`).then(r => r.json()).catch(() => fallbackStatsData)
+      fetch(`${API_BASE_URL}/members`).then(r => r.json()).catch(() => fallbackMembersData),
+      fetch(`${API_BASE_URL}/stats`).then(r => r.json()).catch(() => fallbackStatsData)
     ]).then(([membersData, statsData]) => {
       setMemberList(Array.isArray(membersData) && membersData.length > 0 ? membersData : fallbackMembersData);
       setStats(Array.isArray(statsData) && statsData.length > 0 ? statsData : fallbackStatsData);

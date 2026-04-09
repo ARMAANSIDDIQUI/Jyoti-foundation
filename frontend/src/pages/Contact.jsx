@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { MapPin, Phone, Mail, Clock, Send, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import API_BASE_URL from '../utils/api.js';
 
 export default function Contact() {
   const { t, i18n } = useTranslation();
@@ -21,7 +22,7 @@ export default function Contact() {
     setStatus(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/contact`, {
+      const response = await fetch(`${API_BASE_URL}/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

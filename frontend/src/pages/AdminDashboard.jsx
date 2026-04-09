@@ -9,7 +9,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+import API_BASE_URL from '../utils/api.js';
+
+const API_BASE = API_BASE_URL;
 
 export default function AdminDashboard() {
   const { logout, isAuthenticated } = useAuth();

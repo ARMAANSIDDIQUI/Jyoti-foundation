@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { MapPin, Play, Info, ArrowLeft, Calendar, Image as ImageIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { generateSlug } from '../utils/slugify';
+import API_BASE_URL from '../utils/api.js';
 
 // Animation variants
 const fadeInUp = {
@@ -30,7 +31,7 @@ export default function ProjectDetails() {
 
   useEffect(() => {
     window.scrollTo(0, 0); // Ensure page starts at top
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/projects`)
+    fetch(`${API_BASE_URL}/projects`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {

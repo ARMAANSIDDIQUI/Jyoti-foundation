@@ -7,6 +7,7 @@ import WorkCard from '../components/WorkCard';
 import { hospitals, workActivities, stats as fallbackStats } from '../data/placeholderData';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import API_BASE_URL from '../utils/api.js';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -31,7 +32,7 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch stats
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/stats`)
+    fetch(`${API_BASE_URL}/stats`)
       .then(r => r.json())
       .then(data => setStats(Array.isArray(data) && data.length > 0 ? data : fallbackStats))
       .catch(err => {
@@ -40,7 +41,7 @@ export default function Home() {
       });
 
     // Fetch projects for initiatives
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/projects`)
+    fetch(`${API_BASE_URL}/projects`)
       .then(r => r.json())
       .then(data => setProjects(Array.isArray(data) && data.length > 0 ? data.slice(0, 4) : workActivities.slice(0, 4)))
       .catch(err => {
@@ -49,7 +50,7 @@ export default function Home() {
       });
 
     // Fetch hero slides
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/hero`)
+    fetch(`${API_BASE_URL}/hero`)
       .then(r => r.json())
       .then(data => setHeroSlides(Array.isArray(data) && data.length > 0 ? data : []))
       .catch(err => console.error('Error fetching hero slides:', err));

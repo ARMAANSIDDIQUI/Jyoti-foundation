@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import WorkCard from '../components/WorkCard';
+import API_BASE_URL from '../utils/api.js';
 
 export default function OurWork() {
   const { t, i18n } = useTranslation();
@@ -18,8 +19,8 @@ export default function OurWork() {
     ];
 
     Promise.all([
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/projects`).then(res => res.json()).catch((err) => { console.error('Error fetching projects:', err); return fallbackProjects; }),
-      fetch(`${import.meta.env.VITE_API_BASE_URL}/categories`).then(res => res.json()).catch((err) => { console.error('Error fetching categories:', err); return [{ name: 'Medical Camp' }, { name: 'Outreach' }]; })
+      fetch(`${API_BASE_URL}/projects`).then(res => res.json()).catch((err) => { console.error('Error fetching projects:', err); return fallbackProjects; }),
+      fetch(`${API_BASE_URL}/categories`).then(res => res.json()).catch((err) => { console.error('Error fetching categories:', err); return [{ name: 'Medical Camp' }, { name: 'Outreach' }]; })
     ])
       .then(([projectsData, categoriesData]) => {
         setProjects(Array.isArray(projectsData) && projectsData.length > 0 ? projectsData : fallbackProjects);
