@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import MainLayout from './layouts/MainLayout';
@@ -44,6 +44,8 @@ export default function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Route>
 
+          {/* Catch-all route to redirect back to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
       </Router>

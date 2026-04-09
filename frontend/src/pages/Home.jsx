@@ -78,7 +78,7 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-[calc(100vh-64px)] flex items-center pt-12 pb-24 lg:pt-0 lg:pb-0 overflow-hidden">
+      <section className="relative min-h-[calc(100vh-56px)] flex items-center pt-12 pb-24 lg:pt-0 lg:pb-0 overflow-hidden">
         {/* Background shapes - More distinct bluish dark */}
         <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[800px] h-[800px] bg-[#3A86FF]/20 rounded-full blur-[120px] -z-10" />
         <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[600px] h-[600px] bg-[#8EC5FC]/40 rounded-full blur-[120px] -z-10" />
