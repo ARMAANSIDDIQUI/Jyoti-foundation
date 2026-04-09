@@ -14,6 +14,7 @@ export default function WorkCard({ work }) {
   const displayName = isHindi && work.nameHindi ? work.nameHindi : (work.title || work.name);
   const displayDesc = isHindi && work.descriptionHindi ? work.descriptionHindi : (work.description || work.details);
   const displayLoc = isHindi && work.locationHindi ? work.locationHindi : work.location;
+  const displayCategory = isHindi && work.categoryHindi ? work.categoryHindi : work.category;
 
   const images = work.images && work.images.length > 0 ? work.images : ['/images/eye_camp.png'];
 
@@ -71,7 +72,7 @@ export default function WorkCard({ work }) {
 
         <div className="absolute top-4 left-4">
           <span className="bg-white/90 backdrop-blur-sm text-primary px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-            {work.category || t('ourWork.initiative')}
+            {displayCategory || t('ourWork.initiative')}
           </span>
         </div>
 

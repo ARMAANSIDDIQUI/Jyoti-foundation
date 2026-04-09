@@ -26,16 +26,16 @@ export default function About() {
   useEffect(() => {
 
     Promise.all([
-      fetch(`${API_BASE_URL}/members`).then(r => r.json()).catch(() => fallbackMembersData),
-      fetch(`${API_BASE_URL}/stats`).then(r => r.json()).catch(() => fallbackStatsData)
+      fetch(`${API_BASE_URL}/members`).then(r => r.json()).catch(() => []),
+      fetch(`${API_BASE_URL}/stats`).then(r => r.json()).catch(() => [])
     ]).then(([membersData, statsData]) => {
-      setMemberList(Array.isArray(membersData) && membersData.length > 0 ? membersData : fallbackMembersData);
-      setStats(Array.isArray(statsData) && statsData.length > 0 ? statsData : fallbackStatsData);
+      setMemberList(Array.isArray(membersData) ? membersData : []);
+      setStats(Array.isArray(statsData) ? statsData : []);
       setLoading(false);
     }).catch(err => {
       console.error('Error fetching about data:', err);
-      setMemberList(fallbackMembersData);
-      setStats(fallbackStatsData);
+      setMemberList([]);
+      setStats([]);
       setLoading(false);
     });
   }, []);

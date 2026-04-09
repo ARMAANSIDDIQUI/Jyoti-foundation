@@ -21,7 +21,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
-  const [confirmModal, setConfirmModal] = useState({ show: false, type: '', id: '', title: '' });
+  const [confirmModal, setConfirmModal] = useState({ show: false, type: '', id: '', title: '', message: '', onConfirm: null });
+  const [isActionLoading, setIsActionLoading] = useState(false);
   const [alertState, setAlertState] = useState({ show: false, message: '', type: 'success' });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
@@ -79,8 +80,8 @@ export default function AdminDashboard() {
 
 
   const handleDelete = async () => {
-
     const { type, id } = confirmModal;
+    setIsActionLoading(true);
     try {
       const response = await fetch(`${API_BASE}/${type}/${id}`, { 
         method: 'DELETE',
@@ -95,12 +96,13 @@ export default function AdminDashboard() {
     } catch (err) {
       setAlertState({ show: true, message: 'Error deleting', type: 'error' });
     } finally {
+      setIsActionLoading(false);
       setConfirmModal({ ...confirmModal, show: false });
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
+  const submitSave = async () => {
+    setIsActionLoading(true);
     const type = activeTab === 'members' ? 'members' : 
                  activeTab === 'projects' ? 'projects' : 
                  activeTab === 'stats' ? 'stats' : 
@@ -139,7 +141,21 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       setAlertState({ show: true, message: 'Error saving', type: 'error' });
+    } finally {
+      setIsActionLoading(false);
+      setConfirmModal({ ...confirmModal, show: false });
     }
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    setConfirmModal({
+      show: true,
+      title: currentItem._id ? 'Confirm Update' : 'Confirm Addition',
+      message: `Are you sure you want to ${currentItem._id ? 'update' : 'add'} this ${activeTab === 'heroSlides' ? 'slide' : activeTab.slice(0, -1)}?`,
+      type: 'save',
+      onConfirm: submitSave
+    });
   };
 
   const menuItems = [
@@ -620,8 +636,10 @@ export default function AdminDashboard() {
                   </>
                 )}
                 <div className="flex gap-4 pt-6">
-                  <button type="submit" className="flex-grow bg-primary text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-primary/20 transition-all">Save Changes</button>
-                  <button type="button" onClick={() => setShowModal(false)} className="px-8 py-4 rounded-2xl bg-gray-100 text-gray-600 font-bold">Cancel</button>
+                  <button type="submit" disabled={isActionLoading} className="flex-grow bg-primary text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                    {isActionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save Changes'}
+                  </button>
+                  <button type="button" onClick={() => setShowModal(false)} className="px-8 py-4 rounded-2xl bg-gray-100 text-gray-600 font-bold whitespace-nowrap">Cancel</button>
                 </div>
               </form>
               </div>
@@ -644,19 +662,22 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl relative z-10 text-center"
+              className="bg-white w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl relative z-10 text-center border border-gray-100"
             >
-              <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center text-red-500 mx-auto mb-4">
-                <Trash2 className="w-8 h-8" />
+              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 ${confirmModal.type === 'save' ? 'bg-blue-50 text-blue-500' : 'bg-red-50 text-red-500'}`}>
+                {confirmModal.type === 'save' ? <Save className="w-8 h-8" /> : <Trash2 className="w-8 h-8" />}
               </div>
-              <h3 className="text-xl font-bold mb-2">Are you sure?</h3>
-              <p className="text-gray-500 text-sm mb-8">You are about to delete <span className="font-bold text-text">"{confirmModal.title}"</span>. This action cannot be undone.</p>
+              <h3 className="text-xl font-bold mb-2">{confirmModal.title}</h3>
+              <p className="text-gray-500 text-sm mb-8">
+                {confirmModal.message || `You are about to delete "${confirmModal.title}". This action cannot be undone.`}
+              </p>
               <div className="flex gap-3">
                 <button 
-                  onClick={handleDelete}
-                  className="flex-grow bg-red-500 text-white font-bold py-3 rounded-xl hover:bg-red-600 transition-all shadow-md shadow-red-200"
+                  disabled={isActionLoading}
+                  onClick={confirmModal.onConfirm || handleDelete}
+                  className={`flex-grow text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 ${confirmModal.type === 'save' ? 'bg-blue-500 hover:bg-blue-600 shadow-blue-200' : 'bg-red-500 hover:bg-red-600 shadow-red-200'}`}
                 >
-                  Delete Now
+                  {isActionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (confirmModal.type === 'save' ? 'Proceed' : 'Delete Now')}
                 </button>
                 <button 
                   onClick={() => setConfirmModal({ ...confirmModal, show: false })}

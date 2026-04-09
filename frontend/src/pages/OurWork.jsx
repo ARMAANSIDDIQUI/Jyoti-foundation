@@ -15,23 +15,18 @@ export default function OurWork() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fallbackProjects = [
-      { _id: '1', name: 'Free Eye Camp - Moradabad', nameHindi: 'नि:शुल्क नेत्र शिविर - मुरादाबाद', category: 'Medical Camp', location: 'Moradabad', description: 'Annual free eye screening and cataract surgery camp.', images: [] },
-      { _id: '2', name: 'Rural Outreach Program', nameHindi: 'ग्रामीण आउटरीच कार्यक्रम', category: 'Outreach', location: 'Hasanpur', description: 'Healthcare services delivered to remote rural areas.', images: [] }
-    ];
-
     Promise.all([
-      fetch(`${API_BASE_URL}/projects`).then(res => res.json()).catch((err) => { console.error('Error fetching projects:', err); return fallbackProjects; }),
-      fetch(`${API_BASE_URL}/categories`).then(res => res.json()).catch((err) => { console.error('Error fetching categories:', err); return [{ name: 'Medical Camp' }, { name: 'Outreach' }]; })
+      fetch(`${API_BASE_URL}/projects`).then(res => res.json()).catch((err) => { console.error('Error fetching projects:', err); return []; }),
+      fetch(`${API_BASE_URL}/categories`).then(res => res.json()).catch((err) => { console.error('Error fetching categories:', err); return []; })
     ])
       .then(([projectsData, categoriesData]) => {
-        setProjects(Array.isArray(projectsData) && projectsData.length > 0 ? projectsData : fallbackProjects);
-        setCategories(Array.isArray(categoriesData) ? categoriesData : [{ name: 'Medical Camp' }, { name: 'Outreach' }]);
+        setProjects(Array.isArray(projectsData) ? projectsData : []);
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
         setLoading(false);
       })
       .catch((err) => {
         console.error('Error fetching work data:', err);
-        setProjects(fallbackProjects);
+        setProjects([]);
         setLoading(false);
       });
   }, []);

@@ -10,6 +10,7 @@ const ProjectSchema = new mongoose.Schema({
   details: { type: String, required: true },
   detailsHindi: { type: String, required: true },
   category: { type: String, required: true },
+  categoryHindi: { type: String, required: true },
   images: [{ type: String }],
   videoUrl: { type: String }, // Cloudinary video URL
   youtubeUrl: { type: String } // YouTube embed link

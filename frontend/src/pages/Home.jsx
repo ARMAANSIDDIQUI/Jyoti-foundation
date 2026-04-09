@@ -39,20 +39,20 @@ export default function Home() {
     // Fetch stats
     fetch(`${API_BASE_URL}/stats`)
       .then(r => r.json())
-      .then(data => setStats(Array.isArray(data) && data.length > 0 ? data : fallbackStats))
+      .then(data => setStats(Array.isArray(data) ? data : []))
       .catch(err => {
         console.error('Error fetching stats:', err);
-        setStats(fallbackStats);
+        setStats([]);
       })
       .finally(() => setLoadingStats(false));
 
     // Fetch projects for initiatives
     fetch(`${API_BASE_URL}/projects`)
       .then(r => r.json())
-      .then(data => setProjects(Array.isArray(data) && data.length > 0 ? data.slice(0, 4) : workActivities.slice(0, 4)))
+      .then(data => setProjects(Array.isArray(data) ? data.slice(0, 4) : []))
       .catch(err => {
         console.error('Error fetching projects:', err);
-        setProjects(workActivities.slice(0, 4));
+        setProjects([]);
       })
       .finally(() => setLoadingProjects(false));
 

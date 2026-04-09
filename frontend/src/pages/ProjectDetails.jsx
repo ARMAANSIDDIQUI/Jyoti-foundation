@@ -82,6 +82,7 @@ export default function ProjectDetails() {
   const description = isHindi ? (project.descriptionHindi || project.description) : project.description;
   const details = isHindi ? (project.detailsHindi || project.details) : project.details;
   const location = isHindi ? (project.locationHindi || project.location) : project.location;
+  const category = isHindi ? (project.categoryHindi || project.category) : project.category;
 
   const createdDate = project.createdAt ? new Date(project.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
@@ -111,7 +112,7 @@ export default function ProjectDetails() {
           <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="max-w-4xl">
             <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-4 mb-6">
               <span className="bg-primary/90 backdrop-blur-sm text-white px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wider shadow-lg">
-                {project.category}
+                {category}
               </span>
               <div className="flex items-center gap-2 text-gray-200 font-medium bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full">
                 <MapPin className="w-4 h-4 text-primary" /> {location}
@@ -217,7 +218,7 @@ export default function ProjectDetails() {
             >
               <div className="mb-8">
                 <h3 className="text-gray-400 font-bold text-sm uppercase tracking-wider mb-2">Category</h3>
-                <div className="text-xl font-bold text-text">{project.category}</div>
+                <div className="text-xl font-bold text-text">{category}</div>
               </div>
 
               <hr className="border-gray-100 my-6" />
