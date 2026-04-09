@@ -8,6 +8,8 @@ import { hospitals, workActivities, stats as fallbackStats } from '../data/place
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import API_BASE_URL from '../utils/api.js';
+import { StatSkeleton, CardSkeleton } from '../components/Skeleton';
+import Loader from '../components/Loader';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -29,6 +31,9 @@ export default function Home() {
   const [heroSlides, setHeroSlides] = useState([]);
   const [projects, setProjects] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [loadingHero, setLoadingHero] = useState(true);
+  const [loadingProjects, setLoadingProjects] = useState(true);
 
   useEffect(() => {
     // Fetch stats
@@ -38,7 +43,8 @@ export default function Home() {
       .catch(err => {
         console.error('Error fetching stats:', err);
         setStats(fallbackStats);
-      });
+      })
+      .finally(() => setLoadingStats(false));
 
     // Fetch projects for initiatives
     fetch(`${API_BASE_URL}/projects`)
@@ -47,13 +53,15 @@ export default function Home() {
       .catch(err => {
         console.error('Error fetching projects:', err);
         setProjects(workActivities.slice(0, 4));
-      });
+      })
+      .finally(() => setLoadingProjects(false));
 
     // Fetch hero slides
     fetch(`${API_BASE_URL}/hero`)
       .then(r => r.json())
       .then(data => setHeroSlides(Array.isArray(data) && data.length > 0 ? data : []))
-      .catch(err => console.error('Error fetching hero slides:', err));
+      .catch(err => console.error('Error fetching hero slides:', err))
+      .finally(() => setLoadingHero(false));
   }, []);
 
 
@@ -70,7 +78,7 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative pt-4 pb-24 lg:pt-8 lg:pb-32 overflow-hidden">
+      <section className="relative min-h-[calc(100vh-64px)] flex items-center pt-12 pb-24 lg:pt-0 lg:pb-0 overflow-hidden">
         {/* Background shapes - More distinct bluish dark */}
         <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[800px] h-[800px] bg-[#3A86FF]/20 rounded-full blur-[120px] -z-10" />
         <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[600px] h-[600px] bg-[#8EC5FC]/40 rounded-full blur-[120px] -z-10" />
@@ -120,7 +128,11 @@ export default function Home() {
             >
               <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-8 border-white aspect-[4/3] bg-gray-100">
                 <AnimatePresence>
-                  {heroSlides.length > 0 ? (
+                  {loadingHero ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                      <Loader />
+                    </div>
+                  ) : heroSlides.length > 0 ? (
                     <motion.img
                       key={currentSlide}
                       src={heroSlides[currentSlide]?.image}
@@ -193,7 +205,9 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />
             
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
-              {stats.map((stat, i) => (
+              {loadingStats ? (
+                Array(4).fill(0).map((_, i) => <StatSkeleton key={i} />)
+              ) : stats.map((stat, i) => (
                 <Counter 
                   key={i}
                   value={stat.value ? String(stat.value).replace(/[^0-9]/g, '') : '0'} 
@@ -245,7 +259,7 @@ export default function Home() {
       </section>
 
       {/* Our Work Section - Swapped to fetch from projects */}
-      {projects.length > 0 && (
+      {(loadingProjects || projects.length > 0) && (
         <section className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
@@ -279,7 +293,9 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {projects.map((project, index) => (
+              {loadingProjects ? (
+                Array(4).fill(0).map((_, i) => <CardSkeleton key={i} />)
+              ) : projects.map((project, index) => (
                 <motion.div
                   key={project._id}
                   initial="hidden"

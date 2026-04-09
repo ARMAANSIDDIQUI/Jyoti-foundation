@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import WorkCard from '../components/WorkCard';
 import API_BASE_URL from '../utils/api.js';
+import { CardSkeleton } from '../components/Skeleton';
+import Loader from '../components/Loader';
 
 export default function OurWork() {
   const { t, i18n } = useTranslation();
@@ -70,13 +72,17 @@ export default function OurWork() {
 
         {/* Grid */}
         <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence mode="popLayout">
-            {filteredWork.map((work) => (
-              <motion.div key={work._id} layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
-                <WorkCard work={work} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          {loading ? (
+            Array(6).fill(0).map((_, i) => <CardSkeleton key={i} />)
+          ) : (
+            <AnimatePresence mode="popLayout">
+              {filteredWork.map((work) => (
+                <motion.div key={work._id} layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }}>
+                  <WorkCard work={work} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          )}
         </motion.div>
 
         {filteredWork.length === 0 && <div className="text-center py-20 text-gray-500 font-medium">{t('ourWork.noResults')}</div>}

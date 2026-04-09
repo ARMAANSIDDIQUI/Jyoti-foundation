@@ -5,6 +5,7 @@ import { MapPin, Play, Info, ArrowLeft, Calendar, Image as ImageIcon } from 'luc
 import { useTranslation } from 'react-i18next';
 import { generateSlug } from '../utils/slugify';
 import API_BASE_URL from '../utils/api.js';
+import Loader from '../components/Loader';
 
 // Animation variants
 const fadeInUp = {
@@ -55,8 +56,8 @@ export default function ProjectDetails() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-primary border-r-4 border-r-transparent"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader fullScreen />
       </div>
     );
   }

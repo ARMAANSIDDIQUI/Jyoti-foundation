@@ -6,6 +6,7 @@ import MemberCard from '../components/MemberCard';
 import Counter from '../components/Counter';
 import API_BASE_URL from '../utils/api.js';
 import { members as fallbackMembersData, stats as fallbackStatsData } from '../data/placeholderData';
+import { StatSkeleton, MemberSkeleton } from '../components/Skeleton';
 
 
 const fadeInUp = {
@@ -116,7 +117,7 @@ export default function About() {
         </div>
 
         {/* Dynamic Stats Section */}
-        {stats.length > 0 && (
+        {(loading || stats.length > 0) && (
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -125,7 +126,9 @@ export default function About() {
             className="mb-24 py-16 bg-white rounded-[3rem] shadow-sm border border-gray-50"
           >
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 px-8">
-              {stats.map((stat, index) => (
+              {loading ? (
+                Array(4).fill(0).map((_, i) => <StatSkeleton key={i} />)
+              ) : stats.map((stat, index) => (
                 <Counter 
                   key={stat._id || stat.id || index} 
                   value={stat.value} 
@@ -182,7 +185,9 @@ export default function About() {
 
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {displayMembers.map((member, index) => (
+          {loading ? (
+            Array(4).fill(0).map((_, i) => <MemberSkeleton key={i} />)
+          ) : displayMembers.map((member, index) => (
             <motion.div
               key={member._id || member.id || index}
               initial="hidden"
