@@ -60,9 +60,9 @@ export default function LanguageSuggestionModal() {
               <h2 className="font-heading text-2xl font-bold text-text mb-4">
                 {isEnglish ? 'क्या आप हिन्दी में सहज हैं?' : 'Comfortable in English?'}
               </h2>
-              
+
               <p className="text-gray-500 mb-8 px-4 leading-relaxed font-medium">
-                {isEnglish 
+                {isEnglish
                   ? 'आप हमारी वेबसाइट के सभी विवरण हिन्दी में देख सकते हैं।'
                   : 'You can explore all foundation details and initiatives in English for a better experience.'}
               </p>
@@ -78,12 +78,12 @@ export default function LanguageSuggestionModal() {
                   onClick={handleClose}
                   className="w-full bg-gray-50 hover:bg-gray-100 text-text font-bold py-4 rounded-2xl transition-all"
                 >
-                  {isEnglish ? 'अंग्रेजी में जारी रखें' : 'Continue in Hindi'}
+                  {isEnglish ? 'Continue in Hindi' : 'अंग्रेजी में जारी रखें'}
                 </button>
               </div>
             </div>
 
-            <button 
+            <button
               onClick={handleClose}
               className="absolute top-4 right-4 p-2 text-gray-400 hover:text-text hover:bg-gray-100 rounded-full transition-all"
             >
