@@ -91,10 +91,10 @@ export default function Home() {
               variants={staggerContainer}
               className="max-w-2xl"
             >
-              <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm border border-gray-100 text-primary font-medium text-sm mb-6">
+              {/* <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm border border-gray-100 text-primary font-medium text-sm mb-6">
                 <HeartPulse className="w-4 h-4" />
                 {t('common.nav.home')}
-              </motion.div>
+              </motion.div> */}
               <motion.h1 variants={fadeInUp} className="font-heading text-4xl sm:text-5xl lg:text-7xl font-bold text-text leading-[1.1] mb-6 tracking-tight">
                 {t('common.organizationName')} <br />
                 <span className="text-primary italic animate-pulse-slow">{t('home.heroSuffix')}</span>
