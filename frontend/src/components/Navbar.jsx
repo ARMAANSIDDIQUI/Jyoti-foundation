@@ -19,15 +19,16 @@ export default function Navbar() {
   return (
     <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-14">
+        <div className="flex justify-between min-h-[4rem] py-2">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="bg-primary p-2 rounded-lg">
-                <Heart className="w-6 h-6 text-white" />
+            <Link to="/" className="flex items-center gap-3">
+              <div className="flex items-center justify-center">
+                <img src="/logo_header.png" alt="Jyoti Foundation Logo" className="h-10 md:h-12 w-auto object-contain" />
               </div>
-              <span className="font-heading font-bold text-2xl text-text tracking-tight">
-                {t('common.organizationSubtitle')}
-              </span>
+              <div className="flex flex-col text-[#0b428d] font-bold leading-none">
+                <span className="text-2xl md:text-3xl tracking-tight uppercase">{t('common.brandName')}</span>
+                <span className="text-xs md:text-sm tracking-[0.2em] mt-0.5 opacity-90">{t('common.brandType')}</span>
+              </div>
             </Link>
 
           </div>

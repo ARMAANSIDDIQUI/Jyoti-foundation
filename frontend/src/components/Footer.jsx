@@ -11,13 +11,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* About */}
           <div>
-            <Link to="/" className="flex items-center gap-2 mb-6">
-              <div className="bg-primary/10 p-2 rounded-lg">
-                <Heart className="w-6 h-6 text-primary" />
+            <Link to="/" className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center">
+                <img src="/logo_header.png" alt="Jyoti Foundation Logo" className="w-12 h-12 object-contain" />
               </div>
-              <span className="font-heading font-bold text-xl text-text">
-                {t('common.organizationSubtitle')} Foundation
-              </span>
+              <div className="flex flex-col text-[#0b428d] font-bold leading-none">
+                <span className="text-2xl tracking-tight uppercase">{t('common.brandName')}</span>
+                <span className="text-xs tracking-[0.2em] mt-0.5 opacity-90">{t('common.brandType')}</span>
+              </div>
             </Link>
             <p className="text-gray-600 mb-6 leading-relaxed">
               {t('common.aboutShort')}

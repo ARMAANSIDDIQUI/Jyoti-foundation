@@ -7,8 +7,8 @@
   "theme_color": "#2563eb",
   "icons": [
     {
-      "src": "/images/hero_banner.png",
-      "sizes": "192x192",
+      "src": "/logo.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]

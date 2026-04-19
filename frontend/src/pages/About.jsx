@@ -6,8 +6,8 @@ import MemberCard from '../components/MemberCard';
 import Counter from '../components/Counter';
 import API_BASE_URL from '../utils/api.js';
 import { members as fallbackMembersData, stats as fallbackStatsData } from '../data/placeholderData';
-import { StatSkeleton, MemberSkeleton } from '../components/Skeleton';
-
+import { StatSkeleton, MemberSkeleton, CardSkeleton } from '../components/Skeleton';
+import NewsCard from '../components/NewsCard';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -21,26 +21,28 @@ export default function About() {
 
   const [memberList, setMemberList] = useState([]);
   const [stats, setStats] = useState([]);
+  const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
 
     Promise.all([
       fetch(`${API_BASE_URL}/members`).then(r => r.json()).catch(() => []),
-      fetch(`${API_BASE_URL}/stats`).then(r => r.json()).catch(() => [])
-    ]).then(([membersData, statsData]) => {
+      fetch(`${API_BASE_URL}/stats`).then(r => r.json()).catch(() => []),
+      fetch(`${API_BASE_URL}/news-coverage`).then(r => r.json()).catch(() => [])
+    ]).then(([membersData, statsData, newsData]) => {
       setMemberList(Array.isArray(membersData) ? membersData : []);
       setStats(Array.isArray(statsData) ? statsData : []);
+      setNewsList(Array.isArray(newsData) ? newsData : []);
       setLoading(false);
     }).catch(err => {
       console.error('Error fetching about data:', err);
       setMemberList([]);
       setStats([]);
+      setNewsList([]);
       setLoading(false);
     });
   }, []);
-
-
 
   const displayMembers = memberList;
 
@@ -117,7 +119,7 @@ export default function About() {
         </div>
 
         {/* Dynamic Stats Section */}
-        {(loading || stats.length > 0) && (
+        {((loading && stats.length === 0) || stats.length > 0) && (
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -168,6 +170,47 @@ export default function About() {
             </div>
           </motion.div>
         </div>
+
+        {/* News Coverage Section */}
+        {(loading || newsList.length > 0) && (
+          <div className="mb-24">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeInUp}
+              className="text-center mb-12"
+            >
+              <h2 className="font-heading text-3xl font-bold text-text mb-4">
+                {i18n.language === 'en' ? 'News Coverage' : 'समाचार कवरेज'}
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                {i18n.language === 'en' 
+                  ? "Highlighting our impact through the lens of media. Read about our journey and major medical camps."
+                  : "मीडिया के लेंस के माध्यम से हमारे प्रभाव को उजागर करना। हमारी यात्रा और प्रमुख चिकित्सा शिविरों के बारे में पढ़ें।"}
+              </p>
+            </motion.div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {loading ? (
+                Array(3).fill(0).map((_, i) => <CardSkeleton key={i} />)
+              ) : newsList.map((news, index) => (
+                <motion.div
+                  key={news._id || news.id || index}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.95 },
+                    visible: { opacity: 1, scale: 1, transition: { duration: 0.6, delay: index * 0.1 } }
+                  }}
+                >
+                  <NewsCard news={news} />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Team Section */}
         <motion.div

@@ -16,13 +16,13 @@ const Loader = ({ fullScreen = false }) => {
           className="w-16 h-16 rounded-full border-4 border-primary/20 border-t-primary"
         />
         
-        {/* Pulsing heart or logo placeholder */}
+        {/* Pulsing logo */}
         <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
+          animate={{ scale: [1, 1.15, 1] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="absolute inset-0 flex items-center justify-center"
+          className="absolute inset-0 flex items-center justify-center p-2"
         >
-          <div className="w-4 h-4 bg-primary rounded-full shadow-[0_0_15px_rgba(58,134,255,0.5)]" />
+          <img src="/logo.png" alt="Loading..." className="w-full h-full object-contain drop-shadow-md" />
         </motion.div>
       </div>
     </div>

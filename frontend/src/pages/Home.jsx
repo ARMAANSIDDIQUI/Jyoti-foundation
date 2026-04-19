@@ -78,7 +78,7 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-[calc(100vh-56px)] flex items-center pt-12 pb-24 lg:pt-0 lg:pb-0 overflow-hidden">
+      <section className="relative min-h-[calc(100vh-64px)] flex items-center pt-8 pb-16 lg:py-0 overflow-hidden">
         {/* Background shapes - More distinct bluish dark */}
         <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[800px] h-[800px] bg-[#3A86FF]/20 rounded-full blur-[120px] -z-10" />
         <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-[600px] h-[600px] bg-[#8EC5FC]/40 rounded-full blur-[120px] -z-10" />
@@ -95,24 +95,24 @@ export default function Home() {
                 <HeartPulse className="w-4 h-4" />
                 {t('common.nav.home')}
               </motion.div>
-              <motion.h1 variants={fadeInUp} className="font-heading text-5xl lg:text-6xl font-bold text-text leading-tight mb-6">
+              <motion.h1 variants={fadeInUp} className="font-heading text-4xl sm:text-5xl lg:text-7xl font-bold text-text leading-[1.1] mb-6 tracking-tight">
                 {t('common.organizationName')} <br />
-                <span className="text-primary italic">{t('home.heroSuffix')}</span>
+                <span className="text-primary italic animate-pulse-slow">{t('home.heroSuffix')}</span>
               </motion.h1>
               <motion.p variants={fadeInUp} className="text-lg text-gray-600 mb-8 leading-relaxed">
                 {t('common.address')} - {t('common.listYear')}
               </motion.p>
 
-              <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
+              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/donate"
-                  className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-medium transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+                  className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-2xl sm:rounded-full font-bold transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group"
                 >
-                  {t('common.nav.donate')} <ArrowRight className="w-5 h-5" />
+                  {t('common.nav.donate')} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   to="/our-work"
-                  className="bg-white hover:bg-gray-50 text-text border border-gray-200 px-8 py-4 rounded-full font-medium transition-all shadow-sm flex items-center gap-2"
+                  className="bg-white hover:bg-gray-50 text-text border border-gray-200 px-8 py-4 rounded-2xl sm:rounded-full font-bold transition-all shadow-sm flex items-center justify-center gap-2"
                 >
                   {t('home.exploreWork')}
                 </Link>
@@ -199,12 +199,12 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white/70 backdrop-blur-2xl border border-white/40 rounded-[3rem] p-8 md:p-12 shadow-[0_32px_64px_-16px_rgba(30,58,138,0.15)] overflow-hidden relative"
+            className="bg-white/70 backdrop-blur-2xl border border-white/40 rounded-3xl md:rounded-[3rem] p-6 md:p-12 shadow-[0_32px_64px_-16px_rgba(30,58,138,0.15)] overflow-hidden relative"
           >
             {/* Background pattern for stats */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />
             
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 relative z-10">
               {loadingStats ? (
                 Array(4).fill(0).map((_, i) => <StatSkeleton key={i} />)
               ) : stats.map((stat, i) => (
@@ -326,7 +326,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative bg-white/60 backdrop-blur-2xl border-2 border-white/80 rounded-[4rem] p-10 md:p-20 shadow-[0_40px_80px_-15px_rgba(30,58,138,0.25)] overflow-hidden text-center"
+            className="relative bg-white/60 backdrop-blur-2xl border-2 border-white/80 rounded-3xl md:rounded-[4rem] p-8 sm:p-16 md:p-20 shadow-[0_40px_80px_-15px_rgba(30,58,138,0.25)] overflow-hidden text-center"
           >
             {/* Subtle light streak for glass effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent pointer-events-none" />
@@ -338,7 +338,7 @@ export default function Home() {
               variants={staggerContainer}
               className="relative z-10"
             >
-              <motion.h2 variants={fadeInUp} className="font-heading text-4xl md:text-6xl font-extrabold text-[#111827] mb-8 leading-[1.1]">
+              <motion.h2 variants={fadeInUp} className="font-heading text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#111827] mb-6 md:mb-8 leading-[1.1] tracking-tight">
                 {t('home.ctaTitle1')} <span className="text-primary italic">{t('home.ctaTitle2')}</span> <br className="hidden md:block" /> {t('home.ctaTitle3')}
               </motion.h2>
               <motion.p variants={fadeInUp} className="text-[#374151] text-lg md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
@@ -347,21 +347,20 @@ export default function Home() {
 
 
               
-              <motion.div variants={fadeInUp} className="flex flex-wrap justify-center items-center gap-6">
+              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
                 <Link
                   to="/donate"
-                  className="group bg-primary text-white hover:bg-primary/90 px-12 py-5 rounded-[1.5rem] font-black text-xl transition-all shadow-xl shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1 flex items-center gap-3"
+                  className="group w-full sm:w-auto bg-primary text-white hover:bg-primary/90 px-8 py-4 sm:px-12 sm:py-5 rounded-2xl font-black text-lg sm:text-xl transition-all shadow-xl shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1 flex items-center justify-center gap-3"
                 >
                   <Heart className="w-6 h-6 fill-white group-hover:scale-110 transition-transform" />
                   {t('common.nav.donate')}
                 </Link>
                 <Link
                   to="/contact"
-                  className="bg-white/80 backdrop-blur-md text-[#111827] border border-gray-100 px-12 py-5 rounded-[1.5rem] font-black text-xl hover:bg-white hover:-translate-y-1 transition-all shadow-lg"
+                  className="w-full sm:w-auto bg-white/80 backdrop-blur-md text-[#111827] border border-gray-100 px-8 py-4 sm:px-12 sm:py-5 rounded-2xl font-black text-lg sm:text-xl hover:bg-white hover:-translate-y-1 transition-all shadow-lg flex items-center justify-center"
                 >
                   {t('home.getInvolved')}
                 </Link>
-
               </motion.div>
             </motion.div>
           </motion.div>

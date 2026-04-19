@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  LayoutDashboard, Users, FolderHeart, MessageSquare,
+  LayoutDashboard, Users, FolderHeart, MessageSquare, Newspaper,
   LogOut, Plus, Trash2, Edit2, Save, X, Loader2, Check, ExternalLink, Image as ImageIcon, Target, User, Menu
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 import API_BASE_URL from '../utils/api.js';
+import { handleAuthError } from '../utils/auth';
 
 const API_BASE = API_BASE_URL;
 
@@ -17,7 +18,7 @@ export default function AdminDashboard() {
   const { logout, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  const [data, setData] = useState({ members: [], projects: [], contacts: [], stats: [], categories: [], heroSlides: [] });
+  const [data, setData] = useState({ members: [], projects: [], contacts: [], stats: [], categories: [], heroSlides: [], newsCoverage: [] });
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
@@ -46,17 +47,40 @@ export default function AdminDashboard() {
 
   const getAuthHeader = () => ({ 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` });
 
+  const fetchWithAuth = async (url, options = {}) => {
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          ...getAuthHeader(),
+          ...options.headers,
+        },
+      });
+      
+      if (handleAuthError(response, logout)) {
+        navigate('/admin');
+        return null;
+      }
+      
+      return response;
+    } catch (err) {
+      console.error('Network error:', err);
+      throw err;
+    }
+  };
+
   const fetchAllData = async () => {
     setLoading(true);
     try {
       const fetchOpts = { headers: getAuthHeader() };
-      const [members, projects, contacts, stats, categories, heroSlides] = await Promise.all([
-        fetch(`${API_BASE}/members`, fetchOpts).then(r => r.json()),
-        fetch(`${API_BASE}/projects`, fetchOpts).then(r => r.json()),
-        fetch(`${API_BASE}/contact`, fetchOpts).then(r => r.json()),
-        fetch(`${API_BASE}/stats`, fetchOpts).then(r => r.json()),
-        fetch(`${API_BASE}/categories`, fetchOpts).then(r => r.json()),
-        fetch(`${API_BASE}/hero`, fetchOpts).then(r => r.json()),
+      const [members, projects, contacts, stats, categories, heroSlides, newsCoverage] = await Promise.all([
+        fetchWithAuth(`${API_BASE}/members`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/projects`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/contact`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/stats`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/categories`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/hero`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/news-coverage`).then(r => r ? r.json() : []),
       ]);
       setData({
         members: Array.isArray(members) ? members : [],
@@ -64,7 +88,8 @@ export default function AdminDashboard() {
         contacts: Array.isArray(contacts) ? contacts : [],
         stats: Array.isArray(stats) ? stats : [],
         categories: Array.isArray(categories) ? categories : [],
-        heroSlides: Array.isArray(heroSlides) ? heroSlides : []
+        heroSlides: Array.isArray(heroSlides) ? heroSlides : [],
+        newsCoverage: Array.isArray(newsCoverage) ? newsCoverage : []
       });
     } catch (err) {
       console.error('Fetch error:', err);
@@ -83,9 +108,8 @@ export default function AdminDashboard() {
     const { type, id } = confirmModal;
     setIsActionLoading(true);
     try {
-      const response = await fetch(`${API_BASE}/${type}/${id}`, { 
-        method: 'DELETE',
-        headers: getAuthHeader()
+      const response = await fetchWithAuth(`${API_BASE}/${type}/${id}`, { 
+        method: 'DELETE'
       });
       if (response.ok) {
         fetchAllData();
@@ -106,6 +130,7 @@ export default function AdminDashboard() {
     const type = activeTab === 'members' ? 'members' : 
                  activeTab === 'projects' ? 'projects' : 
                  activeTab === 'stats' ? 'stats' : 
+                 activeTab === 'newsCoverage' ? 'news-coverage' :
                  activeTab === 'heroSlides' ? 'hero' : 'categories';
     const method = currentItem._id ? 'PUT' : 'POST';
     const url = currentItem._id ? `${API_BASE}/${type}/${currentItem._id}` : `${API_BASE}/${type}`;
@@ -124,13 +149,12 @@ export default function AdminDashboard() {
     });
 
     try {
-      const response = await fetch(url, {
+      const response = await fetchWithAuth(url, {
         method,
-        headers: getAuthHeader(),
         body: formData
       });
 
-      if (response.ok) {
+      if (response && response.ok) {
         setShowModal(false);
         setCurrentItem(null);
         fetchAllData();
@@ -162,6 +186,7 @@ export default function AdminDashboard() {
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
     { id: 'members', label: 'Members', icon: <Users className="w-5 h-5" /> },
     { id: 'projects', label: 'Projects', icon: <FolderHeart className="w-5 h-5" /> },
+    { id: 'newsCoverage', label: 'News Coverage', icon: <Newspaper className="w-5 h-5" /> },
     { id: 'heroSlides', label: 'Hero Slides', icon: <ImageIcon className="w-5 h-5" /> },
     { id: 'categories', label: 'Categories', icon: <Target className="w-5 h-5" /> },
     { id: 'stats', label: 'Statistics', icon: <Check className="w-5 h-5" /> },
@@ -243,6 +268,7 @@ export default function AdminDashboard() {
                   <Plus className="w-5 h-5" /> New {
                     activeTab === 'members' ? 'Member' : 
                     activeTab === 'projects' ? 'Project' : 
+                    activeTab === 'newsCoverage' ? 'News' :
                     activeTab === 'heroSlides' ? 'Slide' :
                     activeTab === 'stats' ? 'Stat' : 'Category'
                   }
@@ -278,14 +304,9 @@ export default function AdminDashboard() {
                   <h3 className="text-green-700 font-bold text-lg mb-1">Total Projects</h3>
                   <p className="text-4xl font-bold text-green-900">{data.projects.length}</p>
                 </div>
-                <div className="p-8 bg-purple-50 rounded-3xl border border-purple-100">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="p-3 bg-purple-100 rounded-2xl text-purple-600">
-                      <MessageSquare className="w-6 h-6" />
-                    </div>
-                  </div>
-                  <h3 className="text-purple-700 font-bold text-lg mb-1">Total Inquiries</h3>
-                  <p className="text-4xl font-bold text-purple-900">{data.contacts.length}</p>
+                <div className="p-8 bg-purple-50 rounded-3xl border border-purple-100 text-center flex flex-col items-center justify-center">
+                   <h3 className="text-purple-700 font-bold text-lg mb-1">News Coverage</h3>
+                   <p className="text-4xl font-bold text-purple-900">{data.newsCoverage.length}</p>
                 </div>
               </div>
             )}
@@ -354,6 +375,25 @@ export default function AdminDashboard() {
                       </div>
                     </div>
 
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === 'newsCoverage' && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data.newsCoverage.map((news) => (
+                  <div key={news._id} className="p-6 bg-gray-100 rounded-3xl border border-gray-200 group relative flex flex-col h-full">
+                    <img src={news.imageUrl} alt={news.title} className="w-full aspect-video object-cover rounded-2xl mb-4" />
+                    <div className="flex-grow">
+                      <h3 className="font-bold text-text text-lg mb-1">{news.title}</h3>
+                      <p className="text-gray-500 text-sm mb-2">{news.source} • {new Date(news.date).toLocaleDateString()}</p>
+                      <p className="text-gray-600 text-xs line-clamp-2">{news.description}</p>
+                    </div>
+                    <div className="flex gap-2 mt-4 mt-auto">
+                      <button onClick={() => { setCurrentItem(news); setShowModal(true); }} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-blue-600 hover:bg-blue-50 transition-all"><Edit2 className="w-4 h-4" /></button>
+                      <button onClick={() => setConfirmModal({ show: true, type: 'news-coverage', id: news._id, title: news.title })} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-red-600 hover:bg-red-50 transition-all"><Trash2 className="w-4 h-4" /></button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -474,6 +514,7 @@ export default function AdminDashboard() {
                 <h2 className="text-2xl font-bold mb-6 text-text">{currentItem?._id ? 'Edit' : 'Add New'} {
                 activeTab === 'members' ? 'Member' : 
                 activeTab === 'projects' ? 'Project' : 
+                activeTab === 'newsCoverage' ? 'News Item' :
                 activeTab === 'heroSlides' ? 'Slide' :
                 activeTab === 'stats' ? 'Stat' : 'Category'
               }</h2>
@@ -618,9 +659,44 @@ export default function AdminDashboard() {
                       <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Subtitle (Optional)</label>
                       <input type="text" value={currentItem.subtitle || ''} onChange={e => setCurrentItem({ ...currentItem, subtitle: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
                     </div>
+                  </>
+                ) : activeTab === 'newsCoverage' ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Title (EN)</label>
+                        <input type="text" required value={currentItem.title || ''} onChange={e => setCurrentItem({ ...currentItem, title: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Title (HI)</label>
+                        <input type="text" required value={currentItem.titleHindi || ''} onChange={e => setCurrentItem({ ...currentItem, titleHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Source (e.g. newspaper)</label>
+                        <input type="text" required value={currentItem.source || ''} onChange={e => setCurrentItem({ ...currentItem, source: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Date</label>
+                        <input type="date" required value={currentItem.date ? currentItem.date.split('T')[0] : ''} onChange={e => setCurrentItem({ ...currentItem, date: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                    </div>
                     <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Display Order</label>
-                      <input type="number" required value={currentItem.order || 0} onChange={e => setCurrentItem({ ...currentItem, order: e.target.value })} className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:border-primary outline-none" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">News Image / Clipping</label>
+                      <input type="file" accept="image/*" onChange={e => setCurrentItem({ ...currentItem, imageFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
+                      <textarea value={currentItem.description || ''} onChange={e => setCurrentItem({ ...currentItem, description: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 h-20 resize-none" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (HI)</label>
+                      <textarea value={currentItem.descriptionHindi || ''} onChange={e => setCurrentItem({ ...currentItem, descriptionHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 h-20 resize-none" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">External Link (Optional)</label>
+                      <input type="text" value={currentItem.link || ''} onChange={e => setCurrentItem({ ...currentItem, link: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
                     </div>
                   </>
                 ) : (

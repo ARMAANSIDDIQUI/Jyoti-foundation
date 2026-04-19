@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { isTokenExpired } from '../utils/auth';
 
 const AuthContext = createContext();
 
@@ -12,8 +13,13 @@ export const AuthProvider = ({ children }) => {
     const savedUser = localStorage.getItem('adminUser');
     
     if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
+      if (isTokenExpired(savedToken)) {
+        console.warn('Session expired. Logging out.');
+        logout();
+      } else {
+        setToken(savedToken);
+        setUser(JSON.parse(savedUser));
+      }
     }
     setLoading(false);
   }, []);
@@ -32,8 +38,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('adminUser');
   };
 
+  const checkSession = () => {
+    const currentToken = localStorage.getItem('adminToken');
+    if (currentToken && isTokenExpired(currentToken)) {
+      logout();
+      return false;
+    }
+    return true;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ user, token, login, logout, checkSession, loading, isAuthenticated: !!token }}>
       {children}
     </AuthContext.Provider>
   );

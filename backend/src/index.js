@@ -10,6 +10,7 @@ const adminRoutes = require('./routes/admin');
 const statRoutes = require('./routes/stats');
 const categoryRoutes = require('./routes/categories');
 const heroRoutes = require('./routes/hero');
+const newsCoverageRoutes = require('./routes/newsCoverage');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -36,6 +37,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/stats', statRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/hero', heroRoutes);
+app.use('/api/news-coverage', newsCoverageRoutes);
 
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/jyoti-foundation')
