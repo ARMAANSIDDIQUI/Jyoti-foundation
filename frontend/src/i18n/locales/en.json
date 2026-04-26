@@ -81,5 +81,32 @@
     "sendAction": "Send Message",
     "successMsg": "Success! Your message has been sent.",
     "errorMsg": "Error sending message. Please try again."
+  },
+  "donate": {
+    "title": "Support Our Mission",
+    "subtitle": "Your contribution helps us provide essential medical services to those who need it most. Every donation, big or small, makes a significant difference.",
+    "options": {
+      "cataract": "Cataract Surgery",
+      "cataractDesc": "Sponsor a life-changing cataract surgery for one patient.",
+      "patient": "Patient Care",
+      "patientDesc": "Provide comprehensive medical care and medicine for a patient.",
+      "camp": "Mobile Camp",
+      "campDesc": "Fund a full day of medical outreach camp in a rural village."
+    },
+    "viaUPI": "Donate via UPI",
+    "upiDesc": "Use the UPI ID below for instant bank-to-bank transfer.",
+    "bankTransfer": "Bank Transfer",
+    "bankDesc": "Direct deposit or wire transfer to our official foundation bank account.",
+    "accHolder": "Account Holder",
+    "accHolderName": "JYOTI FOUNDATION",
+    "accNum": "Account Number",
+    "accNumValue": "520141001517437",
+    "ifsc": "IFSC Code",
+    "ifscValue": "UBIN0551384",
+    "bankName": "Bank Name",
+    "bankNameValue": "Union Bank of India, Overseas Branch, Moradabad",
+    "taxInfoTitle": "Tax Exemption",
+    "taxInfoDesc": "All donations to Jyoti Foundation are tax-exempt under section 80G of the Income Tax Act. You will receive an official receipt for your contribution.",
+    "contactReceipt": "Request Receipt"
   }
 }

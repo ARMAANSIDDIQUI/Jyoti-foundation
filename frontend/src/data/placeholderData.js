@@ -12,7 +12,7 @@ export const hospitals = [
     phone: "+91 98765 43210",
     services: "Laser Surgery, Cataract, Glaucoma",
     servicesHindi: "लेजर सर्जरी, मोतियाबिंद, कालापानी",
-    image: "/images/surgery.png"
+    image: "/apollo1rec.heic"
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ export const hospitals = [
     phone: "+91 98711 22334",
     services: "General Medicine, Emergency, Maternity",
     servicesHindi: "सामान्य चिकित्सा, आपातकालीन, मातृत्व",
-    image: "/images/hero_banner.png"
+    image: "/dr_vinod_hospital.jpeg"
   }
 ];
 
