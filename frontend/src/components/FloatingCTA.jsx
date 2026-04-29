@@ -93,8 +93,8 @@ export default function FloatingCTA() {
         {/* Contact Dropdown Group */}
         <div className="relative group/contact">
           {/* Dropdown Card */}
-          <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 w-72 opacity-0 invisible group-hover/contact:opacity-100 group-hover/contact:visible transition-all duration-300 -translate-x-4 group-hover/contact:translate-x-0">
-            <div className="absolute left-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-l border-b border-gray-100 rotate-45"></div>
+          <div className="absolute left-full ml-4 bottom-0 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 w-72 opacity-0 invisible group-hover/contact:opacity-100 group-hover/contact:visible transition-all duration-300 -translate-x-4 group-hover/contact:translate-x-0 z-50">
+            <div className="absolute left-[-6px] bottom-6 w-3 h-3 bg-white border-l border-b border-gray-100 rotate-45"></div>
             <h4 className="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider pl-2">Contact Us</h4>
             <div className="space-y-2">
               {hospitals.map((h, i) => (
@@ -114,8 +114,8 @@ export default function FloatingCTA() {
         {/* Instagram Dropdown Group */}
         <div className="relative group/insta">
           {/* Dropdown Card */}
-          <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 w-72 opacity-0 invisible group-hover/insta:opacity-100 group-hover/insta:visible transition-all duration-300 -translate-x-4 group-hover/insta:translate-x-0">
-            <div className="absolute left-[-6px] top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-l border-b border-gray-100 rotate-45"></div>
+          <div className="absolute left-full ml-4 bottom-0 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 w-72 opacity-0 invisible group-hover/insta:opacity-100 group-hover/insta:visible transition-all duration-300 -translate-x-4 group-hover/insta:translate-x-0 z-50">
+            <div className="absolute left-[-6px] bottom-6 w-3 h-3 bg-white border-l border-b border-gray-100 rotate-45"></div>
             <h4 className="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider pl-2">Follow Us</h4>
             <div className="space-y-2">
               {hospitals.map((h, i) => (
