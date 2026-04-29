@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { Target, Eye, HeartHandshake } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Target, Eye, HeartHandshake, ChevronLeft, ChevronRight } from 'lucide-react';
 import MemberCard from '../components/MemberCard';
 import Counter from '../components/Counter';
 import API_BASE_URL from '../utils/api.js';
@@ -22,6 +22,10 @@ export default function About() {
   const [memberList, setMemberList] = useState([]);
   const [stats, setStats] = useState([]);
   const [newsList, setNewsList] = useState([]);
+  const [videoList, setVideoList] = useState([]);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [imageList, setImageList] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,17 +33,23 @@ export default function About() {
     Promise.all([
       fetch(`${API_BASE_URL}/members`).then(r => r.json()).catch(() => []),
       fetch(`${API_BASE_URL}/stats`).then(r => r.json()).catch(() => []),
-      fetch(`${API_BASE_URL}/news-coverage`).then(r => r.json()).catch(() => [])
-    ]).then(([membersData, statsData, newsData]) => {
+      fetch(`${API_BASE_URL}/news-coverage`).then(r => r.json()).catch(() => []),
+      fetch(`${API_BASE_URL}/videos`).then(r => r.json()).catch(() => []),
+      fetch(`${API_BASE_URL}/gallery-images`).then(r => r.json()).catch(() => [])
+    ]).then(([membersData, statsData, newsData, videosData, imagesData]) => {
       setMemberList(Array.isArray(membersData) ? membersData : []);
       setStats(Array.isArray(statsData) ? statsData : []);
       setNewsList(Array.isArray(newsData) ? newsData : []);
+      setVideoList(Array.isArray(videosData) ? videosData : []);
+      setImageList(Array.isArray(imagesData) ? imagesData : []);
       setLoading(false);
     }).catch(err => {
       console.error('Error fetching about data:', err);
       setMemberList([]);
       setStats([]);
       setNewsList([]);
+      setVideoList([]);
+      setImageList([]);
       setLoading(false);
     });
   }, []);
@@ -170,6 +180,171 @@ export default function About() {
             </div>
           </motion.div>
         </div>
+
+        {/* Video Gallery Section */}
+        {videoList.length > 0 && (
+          <div className="mb-24">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeInUp}
+              className="text-center mb-12"
+            >
+              <h2 className="font-heading text-3xl font-bold text-text mb-4">
+                {i18n.language === 'en' ? 'Video Gallery' : 'वीडियो गैलरी'}
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                {i18n.language === 'en' 
+                  ? "Watch moments from our initiatives and the impact we create together."
+                  : "हमारी पहलों के क्षण और हमारे द्वारा बनाए गए प्रभाव को देखें।"}
+              </p>
+            </motion.div>
+
+            <div className="relative max-w-4xl mx-auto">
+              <div className="overflow-hidden rounded-3xl shadow-xl aspect-video bg-gray-900 relative">
+                 <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentVideoIndex}
+                      initial={{ opacity: 0, x: 50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -50 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0"
+                    >
+                      <video 
+                        src={videoList[currentVideoIndex]?.videoUrl} 
+                        className="w-full h-full object-cover" 
+                        controls 
+                        poster={videoList[currentVideoIndex]?.videoUrl.replace('.mp4', '.jpg').replace('.mov', '.jpg')}
+                      />
+                    </motion.div>
+                 </AnimatePresence>
+              </div>
+
+              {videoList.length > 1 && (
+                <>
+                  <button 
+                    onClick={() => setCurrentVideoIndex((prev) => (prev === 0 ? videoList.length - 1 : prev - 1))}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg backdrop-blur-sm transition-all"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={() => setCurrentVideoIndex((prev) => (prev === videoList.length - 1 ? 0 : prev + 1))}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg backdrop-blur-sm transition-all"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                  
+                  {/* Indicators */}
+                  <div className="flex justify-center gap-2 mt-6">
+                    {videoList.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setCurrentVideoIndex(idx)}
+                        className={`w-2 h-2 rounded-full transition-all ${
+                          idx === currentVideoIndex ? 'w-8 bg-primary' : 'bg-gray-300 hover:bg-gray-400'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+              
+              <div className="text-center mt-6">
+                 <h3 className="text-xl font-bold text-text mb-2">
+                   {i18n.language === 'en' ? videoList[currentVideoIndex]?.title : (videoList[currentVideoIndex]?.titleHindi || videoList[currentVideoIndex]?.title)}
+                 </h3>
+                 <p className="text-gray-600">
+                   {i18n.language === 'en' ? videoList[currentVideoIndex]?.description : (videoList[currentVideoIndex]?.descriptionHindi || videoList[currentVideoIndex]?.description)}
+                 </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Image Gallery Section */}
+        {imageList.length > 0 && (
+          <div className="mb-24">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeInUp}
+              className="text-center mb-12"
+            >
+              <h2 className="font-heading text-3xl font-bold text-text mb-4">
+                {i18n.language === 'en' ? 'Image Gallery' : 'छवि गैलरी'}
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                {i18n.language === 'en' 
+                  ? "A visual journey of our work and community impact."
+                  : "हमारे काम और सामुदायिक प्रभाव की एक दृश्य यात्रा।"}
+              </p>
+            </motion.div>
+
+            <div className="relative max-w-4xl mx-auto">
+              <div className="overflow-hidden rounded-3xl shadow-xl aspect-video bg-gray-900 relative">
+                 <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentImageIndex}
+                      initial={{ opacity: 0, x: 50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -50 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0"
+                    >
+                      <img 
+                        src={imageList[currentImageIndex]?.imageUrl} 
+                        alt={imageList[currentImageIndex]?.title || 'Gallery Image'}
+                        className="w-full h-full object-cover" 
+                      />
+                    </motion.div>
+                 </AnimatePresence>
+              </div>
+
+              {imageList.length > 1 && (
+                <>
+                  <button 
+                    onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? imageList.length - 1 : prev - 1))}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg backdrop-blur-sm transition-all"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                  <button 
+                    onClick={() => setCurrentImageIndex((prev) => (prev === imageList.length - 1 ? 0 : prev + 1))}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg backdrop-blur-sm transition-all"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                  
+                  {/* Indicators */}
+                  <div className="flex justify-center gap-2 mt-6">
+                    {imageList.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setCurrentImageIndex(idx)}
+                        className={`w-2 h-2 rounded-full transition-all ${
+                          idx === currentImageIndex ? 'w-8 bg-primary' : 'bg-gray-300 hover:bg-gray-400'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+              
+              <div className="text-center mt-6">
+                 <h3 className="text-xl font-bold text-text mb-2">
+                   {i18n.language === 'en' ? imageList[currentImageIndex]?.title : (imageList[currentImageIndex]?.titleHindi || imageList[currentImageIndex]?.title)}
+                 </h3>
+                 <p className="text-gray-600">
+                   {i18n.language === 'en' ? imageList[currentImageIndex]?.description : (imageList[currentImageIndex]?.descriptionHindi || imageList[currentImageIndex]?.description)}
+                 </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* News Coverage Section */}
         {(loading || newsList.length > 0) && (

@@ -34,6 +34,7 @@ export default function Home() {
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingHero, setLoadingHero] = useState(true);
   const [loadingProjects, setLoadingProjects] = useState(true);
+  const [hospitalImages, setHospitalImages] = useState([]);
 
   useEffect(() => {
     // Fetch stats
@@ -62,6 +63,12 @@ export default function Home() {
       .then(data => setHeroSlides(Array.isArray(data) && data.length > 0 ? data : []))
       .catch(err => console.error('Error fetching hero slides:', err))
       .finally(() => setLoadingHero(false));
+
+    // Fetch hospital images
+    fetch(`${API_BASE_URL}/hospital-images`)
+      .then(r => r.json())
+      .then(data => setHospitalImages(Array.isArray(data) ? data : []))
+      .catch(err => console.error('Error fetching hospital images:', err));
   }, []);
 
 
@@ -240,20 +247,27 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            {hospitals.map((hospital, index) => (
-              <motion.div
-                key={hospital.id}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-50px" }}
-                variants={{
-                  hidden: { opacity: 0, y: 40 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: index * 0.2 } }
-                }}
-              >
-                <HospitalCard hospital={hospital} />
-              </motion.div>
-            ))}
+            {hospitals.map((hospital, index) => {
+              const dbImages = hospitalImages.filter(img => img.hospitalId === hospital.id).map(img => img.imageUrl);
+              const hospitalWithDynamicImage = {
+                ...hospital,
+                images: dbImages.length > 0 ? dbImages : [hospital.image]
+              };
+              return (
+                <motion.div
+                  key={hospital.id}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={{
+                    hidden: { opacity: 0, y: 40 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: index * 0.2 } }
+                  }}
+                >
+                  <HospitalCard hospital={hospitalWithDynamicImage} />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>

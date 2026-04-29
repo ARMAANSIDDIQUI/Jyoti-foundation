@@ -11,6 +11,9 @@ const statRoutes = require('./routes/stats');
 const categoryRoutes = require('./routes/categories');
 const heroRoutes = require('./routes/hero');
 const newsCoverageRoutes = require('./routes/newsCoverage');
+const videoRoutes = require('./routes/video');
+const galleryImageRoutes = require('./routes/galleryImage');
+const hospitalImageRoutes = require('./routes/hospitalImage');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -38,6 +41,9 @@ app.use('/api/stats', statRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/hero', heroRoutes);
 app.use('/api/news-coverage', newsCoverageRoutes);
+app.use('/api/videos', videoRoutes);
+app.use('/api/gallery-images', galleryImageRoutes);
+app.use('/api/hospital-images', hospitalImageRoutes);
 
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/jyoti-foundation')

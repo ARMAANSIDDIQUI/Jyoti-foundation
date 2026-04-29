@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import LanguageSuggestionModal from '../components/LanguageSuggestionModal';
+import FloatingCTA from '../components/FloatingCTA';
 
 export default function MainLayout() {
   return (
@@ -12,6 +13,7 @@ export default function MainLayout() {
       </main>
       <Footer />
       <LanguageSuggestionModal />
+      <FloatingCTA />
     </div>
   );
 }

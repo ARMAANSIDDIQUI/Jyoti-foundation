@@ -77,7 +77,7 @@ export default function Contact() {
                   <h4 className="font-bold text-text text-lg mb-2">Apollo Laser Eye Hospital</h4>
                   <p className="text-gray-700 text-sm mb-3">Moradabad, Uttar Pradesh, India</p>
                   <div className="space-y-2">
-                    <p className="text-sm text-text flex items-center gap-2"><Phone className="w-4 h-4" /> +91 98765 43210</p>
+                    <p className="text-sm text-text flex items-center gap-2"><Phone className="w-4 h-4" /> +91 94122 36889</p>
                     <p className="text-sm text-text flex items-center gap-2"><Clock className="w-4 h-4" /> {t('contact.monSat')}</p>
                     <a href="https://drpallaveye.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-2 font-bold">
                        drpallaveye.com
@@ -153,7 +153,7 @@ export default function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 94122 36889"
                   />
                 </div>
                 <div className="space-y-2">

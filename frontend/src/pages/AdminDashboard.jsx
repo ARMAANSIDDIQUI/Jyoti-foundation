@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   LayoutDashboard, Users, FolderHeart, MessageSquare, Newspaper,
-  LogOut, Plus, Trash2, Edit2, Save, X, Loader2, Check, ExternalLink, Image as ImageIcon, Target, User, Menu
+  LogOut, Plus, Trash2, Edit2, Save, X, Loader2, Check, ExternalLink, Image as ImageIcon, Target, User, Menu, Video, Images, Building2
 } from 'lucide-react';
+import { hospitals } from '../data/placeholderData';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
@@ -18,7 +19,7 @@ export default function AdminDashboard() {
   const { logout, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  const [data, setData] = useState({ members: [], projects: [], contacts: [], stats: [], categories: [], heroSlides: [], newsCoverage: [] });
+  const [data, setData] = useState({ members: [], projects: [], contacts: [], stats: [], categories: [], heroSlides: [], newsCoverage: [], videos: [], galleryImages: [], hospitalImages: [] });
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
@@ -73,7 +74,7 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const fetchOpts = { headers: getAuthHeader() };
-      const [members, projects, contacts, stats, categories, heroSlides, newsCoverage] = await Promise.all([
+      const [members, projects, contacts, stats, categories, heroSlides, newsCoverage, videos, galleryImages, hospitalImages] = await Promise.all([
         fetchWithAuth(`${API_BASE}/members`).then(r => r ? r.json() : []),
         fetchWithAuth(`${API_BASE}/projects`).then(r => r ? r.json() : []),
         fetchWithAuth(`${API_BASE}/contact`).then(r => r ? r.json() : []),
@@ -81,6 +82,9 @@ export default function AdminDashboard() {
         fetchWithAuth(`${API_BASE}/categories`).then(r => r ? r.json() : []),
         fetchWithAuth(`${API_BASE}/hero`).then(r => r ? r.json() : []),
         fetchWithAuth(`${API_BASE}/news-coverage`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/videos`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/gallery-images`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/hospital-images`).then(r => r ? r.json() : []),
       ]);
       setData({
         members: Array.isArray(members) ? members : [],
@@ -89,7 +93,10 @@ export default function AdminDashboard() {
         stats: Array.isArray(stats) ? stats : [],
         categories: Array.isArray(categories) ? categories : [],
         heroSlides: Array.isArray(heroSlides) ? heroSlides : [],
-        newsCoverage: Array.isArray(newsCoverage) ? newsCoverage : []
+        newsCoverage: Array.isArray(newsCoverage) ? newsCoverage : [],
+        videos: Array.isArray(videos) ? videos : [],
+        galleryImages: Array.isArray(galleryImages) ? galleryImages : [],
+        hospitalImages: Array.isArray(hospitalImages) ? hospitalImages : []
       });
     } catch (err) {
       console.error('Fetch error:', err);
@@ -131,6 +138,8 @@ export default function AdminDashboard() {
                  activeTab === 'projects' ? 'projects' : 
                  activeTab === 'stats' ? 'stats' : 
                  activeTab === 'newsCoverage' ? 'news-coverage' :
+                 activeTab === 'videos' ? 'videos' :
+                 activeTab === 'galleryImages' ? 'gallery-images' :
                  activeTab === 'heroSlides' ? 'hero' : 'categories';
     const method = currentItem._id ? 'PUT' : 'POST';
     const url = currentItem._id ? `${API_BASE}/${type}/${currentItem._id}` : `${API_BASE}/${type}`;
@@ -147,6 +156,26 @@ export default function AdminDashboard() {
         formData.append(key, currentItem[key]);
       }
     });
+
+    if (activeTab === 'hospitalImages') {
+      try {
+        const formData = new FormData();
+        formData.append('image', currentItem.imageFile);
+        const res = await fetchWithAuth(`${API_BASE}/hospital-images/${currentItem.hospitalId}`, {
+          method: 'POST',
+          body: formData
+        }, true);
+        if (res.ok) {
+          fetchData();
+          setShowModal(false);
+          setCurrentItem(null);
+        }
+      } catch (err) {
+        console.error('Save failed', err);
+        alert('Error saving hospital image');
+      }
+      return;
+    }
 
     try {
       const response = await fetchWithAuth(url, {
@@ -186,7 +215,10 @@ export default function AdminDashboard() {
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
     { id: 'members', label: 'Members', icon: <Users className="w-5 h-5" /> },
     { id: 'projects', label: 'Projects', icon: <FolderHeart className="w-5 h-5" /> },
+    { id: 'hospitalImages', label: 'Hospitals', icon: <Building2 className="w-5 h-5" /> },
     { id: 'newsCoverage', label: 'News Coverage', icon: <Newspaper className="w-5 h-5" /> },
+    { id: 'videos', label: 'Video Gallery', icon: <Video className="w-5 h-5" /> },
+    { id: 'galleryImages', label: 'Image Gallery', icon: <Images className="w-5 h-5" /> },
     { id: 'heroSlides', label: 'Hero Slides', icon: <ImageIcon className="w-5 h-5" /> },
     { id: 'categories', label: 'Categories', icon: <Target className="w-5 h-5" /> },
     { id: 'stats', label: 'Statistics', icon: <Check className="w-5 h-5" /> },
@@ -260,7 +292,7 @@ export default function AdminDashboard() {
               <a href="/" target="_blank" className="whitespace-nowrap px-6 py-3.5 bg-white border border-gray-100 rounded-2xl text-gray-600 font-bold text-sm flex items-center gap-2 hover:shadow-lg hover:shadow-gray-100 transition-all">
                 <ExternalLink className="w-4 h-4" /> Preview Site
               </a>
-              {(activeTab === 'members' || activeTab === 'projects' || activeTab === 'stats' || activeTab === 'categories' || activeTab === 'heroSlides') && (
+              {(activeTab === 'members' || activeTab === 'projects' || activeTab === 'stats' || activeTab === 'categories' || activeTab === 'heroSlides' || activeTab === 'newsCoverage' || activeTab === 'videos' || activeTab === 'galleryImages') && (
                 <button
                   onClick={() => { setCurrentItem({}); setShowModal(true); }}
                   className="whitespace-nowrap px-8 py-3.5 bg-primary text-white rounded-2xl font-bold text-sm flex items-center gap-2 shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
@@ -269,6 +301,8 @@ export default function AdminDashboard() {
                     activeTab === 'members' ? 'Member' : 
                     activeTab === 'projects' ? 'Project' : 
                     activeTab === 'newsCoverage' ? 'News' :
+                    activeTab === 'videos' ? 'Video' :
+                    activeTab === 'galleryImages' ? 'Image' :
                     activeTab === 'heroSlides' ? 'Slide' :
                     activeTab === 'stats' ? 'Stat' : 'Category'
                   }
@@ -399,6 +433,86 @@ export default function AdminDashboard() {
               </div>
             )}
 
+            {activeTab === 'videos' && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data.videos.map((video) => (
+                  <div key={video._id} className="p-6 bg-gray-100 rounded-3xl border border-gray-200 group relative flex flex-col h-full">
+                    <video src={video.videoUrl} controls className="w-full aspect-video object-cover rounded-2xl mb-4" />
+                    <div className="flex-grow">
+                      <h3 className="font-bold text-text text-lg mb-1">{video.title}</h3>
+                      <p className="text-gray-500 text-sm mb-2">{new Date(video.date).toLocaleDateString()}</p>
+                      <p className="text-gray-600 text-xs line-clamp-2">{video.description}</p>
+                    </div>
+                    <div className="flex gap-2 mt-4 mt-auto">
+                      <button onClick={() => { setCurrentItem(video); setShowModal(true); }} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-blue-600 hover:bg-blue-50 transition-all"><Edit2 className="w-4 h-4" /></button>
+                      <button onClick={() => setConfirmModal({ show: true, type: 'videos', id: video._id, title: video.title })} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-red-600 hover:bg-red-50 transition-all"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === 'galleryImages' && (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data.galleryImages.map((img) => (
+                  <div key={img._id} className="p-6 bg-gray-100 rounded-3xl border border-gray-200 group relative flex flex-col h-full">
+                    <img src={img.imageUrl} alt={img.title} className="w-full aspect-video object-cover rounded-2xl mb-4" />
+                    <div className="flex-grow">
+                      <h3 className="font-bold text-text text-lg mb-1">{img.title}</h3>
+                      <p className="text-gray-500 text-sm mb-2">{new Date(img.date).toLocaleDateString()}</p>
+                      <p className="text-gray-600 text-xs line-clamp-2">{img.description}</p>
+                    </div>
+                    <div className="flex gap-2 mt-4 mt-auto">
+                      <button onClick={() => { setCurrentItem(img); setShowModal(true); }} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-blue-600 hover:bg-blue-50 transition-all"><Edit2 className="w-4 h-4" /></button>
+                      <button onClick={() => setConfirmModal({ show: true, type: 'gallery-images', id: img._id, title: img.title })} className="p-2 bg-white rounded-xl shadow-sm border border-gray-200 text-red-600 hover:bg-red-50 transition-all"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === 'hospitalImages' && (
+              <div className="grid md:grid-cols-2 gap-6">
+                {hospitals.map((hospital) => {
+                  const dbImages = data.hospitalImages.filter(img => img.hospitalId === hospital.id);
+                  return (
+                    <div key={hospital.id} className="p-6 bg-gray-100 rounded-3xl border border-gray-200 flex flex-col h-full">
+                      <div className="flex-grow mb-4">
+                        <h3 className="font-bold text-text text-xl mb-1">{hospital.name}</h3>
+                        <p className="text-gray-500 text-sm mb-4">{hospital.location}</p>
+                        
+                        {dbImages.length > 0 ? (
+                          <div className="grid grid-cols-3 gap-2">
+                            {dbImages.map((img) => (
+                              <div key={img._id} className="relative group rounded-lg overflow-hidden aspect-video">
+                                <img src={img.imageUrl} alt={hospital.name} className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                  <button onClick={() => setConfirmModal({ show: true, type: 'hospital-images', id: img._id, title: 'this image' })} className="p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-sm text-gray-400 italic bg-gray-50 border border-dashed border-gray-200 rounded-xl p-4 text-center">No images uploaded. Will fallback to default placeholder.</div>
+                        )}
+                      </div>
+                      
+                      <div className="mt-auto pt-4 border-t border-gray-200">
+                        <button 
+                          onClick={() => { setCurrentItem({ hospitalId: hospital.id, name: hospital.name }); setShowModal(true); }} 
+                          className="w-full px-4 py-3 bg-white rounded-xl shadow-sm border border-gray-200 text-blue-600 hover:bg-blue-50 transition-all font-bold flex justify-center items-center gap-2"
+                        >
+                          <Plus className="w-5 h-5" /> Add Image
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             {activeTab === 'contacts' && (
               <div className="space-y-4">
                 {data.contacts.map((contact) => (
@@ -511,12 +625,26 @@ export default function AdminDashboard() {
               className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[85vh] p-3"
             >
               <div className="flex-grow overflow-y-auto overflow-x-hidden custom-scrollbar p-6 md:p-8 pr-4">
-                <h2 className="text-2xl font-bold mb-6 text-text">{currentItem?._id ? 'Edit' : 'Add New'} {
-                activeTab === 'members' ? 'Member' : 
-                activeTab === 'projects' ? 'Project' : 
-                activeTab === 'newsCoverage' ? 'News Item' :
-                activeTab === 'heroSlides' ? 'Slide' :
-                activeTab === 'stats' ? 'Stat' : 'Category'
+                <h2 className="text-2xl font-bold mb-6 text-text">
+              {
+                activeTab === 'hospitalImages' ? `Update Image: ${currentItem?.name}` :
+                currentItem?._id ? `Edit ${
+                  activeTab === 'members' ? 'Member' : 
+                  activeTab === 'projects' ? 'Project' : 
+                  activeTab === 'newsCoverage' ? 'News Item' :
+                  activeTab === 'videos' ? 'Video' :
+                  activeTab === 'galleryImages' ? 'Image' :
+                  activeTab === 'heroSlides' ? 'Slide' :
+                  activeTab === 'stats' ? 'Stat' : 'Category'
+                }` : `Add New ${
+                  activeTab === 'members' ? 'Member' : 
+                  activeTab === 'projects' ? 'Project' : 
+                  activeTab === 'newsCoverage' ? 'News Item' :
+                  activeTab === 'videos' ? 'Video' :
+                  activeTab === 'galleryImages' ? 'Image' :
+                  activeTab === 'heroSlides' ? 'Slide' :
+                  activeTab === 'stats' ? 'Stat' : 'Category'
+                }`
               }</h2>
               <form onSubmit={handleSave} className="space-y-4">
                 {activeTab === 'members' ? (
@@ -699,6 +827,61 @@ export default function AdminDashboard() {
                       <input type="text" value={currentItem.link || ''} onChange={e => setCurrentItem({ ...currentItem, link: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
                     </div>
                   </>
+                ) : activeTab === 'videos' ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Title (EN)</label>
+                        <input type="text" required value={currentItem.title || ''} onChange={e => setCurrentItem({ ...currentItem, title: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Title (HI)</label>
+                        <input type="text" value={currentItem.titleHindi || ''} onChange={e => setCurrentItem({ ...currentItem, titleHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Video</label>
+                      <input type="file" accept="video/*" onChange={e => setCurrentItem({ ...currentItem, videoFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
+                      <textarea value={currentItem.description || ''} onChange={e => setCurrentItem({ ...currentItem, description: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 h-20 resize-none" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (HI)</label>
+                      <textarea value={currentItem.descriptionHindi || ''} onChange={e => setCurrentItem({ ...currentItem, descriptionHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 h-20 resize-none" />
+                    </div>
+                  </>
+                ) : activeTab === 'galleryImages' ? (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Title (EN)</label>
+                        <input type="text" required value={currentItem.title || ''} onChange={e => setCurrentItem({ ...currentItem, title: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Title (HI)</label>
+                        <input type="text" value={currentItem.titleHindi || ''} onChange={e => setCurrentItem({ ...currentItem, titleHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 outline-none" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Image</label>
+                      <input type="file" accept="image/*" onChange={e => setCurrentItem({ ...currentItem, imageFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
+                      <textarea value={currentItem.description || ''} onChange={e => setCurrentItem({ ...currentItem, description: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 h-20 resize-none" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (HI)</label>
+                      <textarea value={currentItem.descriptionHindi || ''} onChange={e => setCurrentItem({ ...currentItem, descriptionHindi: e.target.value })} className="w-full px-5 py-3 rounded-2xl bg-gray-50 border border-gray-100 h-20 resize-none" />
+                    </div>
+                  </>
+                ) : activeTab === 'hospitalImages' ? (
+                  <div>
+                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Select New Image</label>
+                    <input type="file" accept="image/*" required onChange={e => setCurrentItem({ ...currentItem, imageFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                  </div>
                 ) : (
                   <>
                     <div>

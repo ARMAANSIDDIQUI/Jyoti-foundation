@@ -9,7 +9,7 @@ export const hospitals = [
     descriptionHindi: "अत्याधुनिक नैदानिक सुविधाओं के साथ उन्नत मोतियाबिंद सर्जरी और लेजर उपचार में विशेषज्ञता वाला हमारा प्रमुख अस्पताल।",
     location: "Moradabad, Uttar Pradesh",
     locationHindi: "मुरादाबाद, उत्तर प्रदेश",
-    phone: "+91 98765 43210",
+    phone: "+91 94122 36889",
     services: "Laser Surgery, Cataract, Glaucoma",
     servicesHindi: "लेजर सर्जरी, मोतियाबिंद, कालापानी",
     image: "/apollo1rec.heic"
