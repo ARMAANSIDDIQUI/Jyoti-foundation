@@ -216,7 +216,7 @@ export default function About() {
                     >
                       <video 
                         src={videoList[currentVideoIndex]?.videoUrl} 
-                        className="w-full h-full object-cover" 
+                        className="w-full h-full object-contain" 
                         controls 
                         preload="none"
                         poster={videoList[currentVideoIndex]?.videoUrl.replace('.mp4', '.jpg').replace('.mov', '.jpg')}
@@ -301,7 +301,7 @@ export default function About() {
                       <img 
                         src={imageList[currentImageIndex]?.imageUrl} 
                         alt={imageList[currentImageIndex]?.title || 'Gallery Image'}
-                        className="w-full h-full object-cover" 
+                        className="w-full h-full object-contain" 
                       />
                     </motion.div>
                  </AnimatePresence>

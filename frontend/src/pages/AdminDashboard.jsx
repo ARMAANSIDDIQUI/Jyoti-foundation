@@ -150,9 +150,9 @@ export default function AdminDashboard() {
         formData.append('image', currentItem.imageFile);
       } else if (key === 'images' && currentItem.imageFiles) {
         currentItem.imageFiles.forEach(file => formData.append('images', file));
-      } else if (key === 'video' && currentItem.videoFile) {
+      } else if ((key === 'video' || key === 'videoFile') && currentItem.videoFile) {
         formData.append('video', currentItem.videoFile);
-      } else if (key !== 'image' && key !== 'images' && key !== 'video' && key !== '_id' && key !== '__v') {
+      } else if (key !== 'image' && key !== 'imageFile' && key !== 'images' && key !== 'imageFiles' && key !== 'video' && key !== 'videoFile' && key !== '_id' && key !== '__v') {
         formData.append(key, currentItem[key]);
       }
     });

@@ -12,7 +12,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
     return {
-      folder: folder,
+      folder: 'jyoti-foundation',
       resource_type: 'auto'
     };
   }
