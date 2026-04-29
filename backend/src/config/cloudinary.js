@@ -18,10 +18,16 @@ const storage = new CloudinaryStorage({
       resource_type = 'video';
     }
 
+    let format;
+    if (file.originalname && file.originalname.match(/\.(heic|heif)$/i)) {
+      format = 'jpg';
+    }
+
     return {
       folder: folder,
       resource_type: resource_type,
-      allowed_formats: ['jpg', 'png', 'jpeg', 'mp4', 'mov']
+      allowed_formats: ['jpg', 'png', 'jpeg', 'mp4', 'mov', 'heic', 'heif'],
+      ...(format && { format })
     };
   }
 });
