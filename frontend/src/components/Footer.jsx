@@ -71,7 +71,14 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-gray-600">
                 <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Moradabad, Uttar Pradesh, India</span>
+                <div className="text-sm">
+                  <span className="block font-bold text-gray-800">Registered Office:</span>
+                  <span className="block mb-3">A-75 Ashiyana, Moradabad</span>
+                  <span className="block font-bold text-gray-800">Moradabad Correspondence:</span>
+                  <span className="block mb-3">Apollo Laser Eye Hospital</span>
+                  <span className="block font-bold text-gray-800">Hasanpur Correspondence:</span>
+                  <span className="block">Dr Vinod Hospital</span>
+                </div>
               </li>
               <li className="flex items-center gap-3 text-gray-600">
                 <Phone className="w-5 h-5 text-primary shrink-0" />

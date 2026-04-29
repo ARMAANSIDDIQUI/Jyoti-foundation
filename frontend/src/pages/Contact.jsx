@@ -73,6 +73,12 @@ export default function Contact() {
 
               <div className="space-y-10">
                 <div className="relative pl-6 border-l-2 border-primary/20">
+                  <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-600" />
+                  <h4 className="font-bold text-text text-lg mb-2">Registered Office</h4>
+                  <p className="text-gray-700 text-sm mb-3">A-75 Ashiyana, Moradabad, Uttar Pradesh, India</p>
+                </div>
+
+                <div className="relative pl-6 border-l-2 border-primary/20">
                   <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary" />
                   <h4 className="font-bold text-text text-lg mb-2">Apollo Laser Eye Hospital</h4>
                   <p className="text-gray-700 text-sm mb-3">Moradabad, Uttar Pradesh, India</p>

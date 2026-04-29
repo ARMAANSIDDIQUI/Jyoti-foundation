@@ -70,9 +70,11 @@ export default function About() {
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-text mb-6">
             {t('about.title')}
           </h1>
-          <p className="text-xl text-gray-600 leading-relaxed">
-            {t('common.address')} - {t('common.listYear')}
-          </p>
+          <div className="text-base text-gray-600 leading-relaxed space-y-1">
+            <div className="font-bold text-lg">Registered Office: {t('common.address')} - {t('common.listYear')}</div>
+            <div>Moradabad Correspondence: Apollo Laser Eye Hospital</div>
+            <div>Hasanpur Correspondence: Dr Vinod Hospital</div>
+          </div>
         </motion.div>
 
         {/* Mission & Vision */}

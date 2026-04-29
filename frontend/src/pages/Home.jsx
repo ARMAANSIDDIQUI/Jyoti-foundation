@@ -106,9 +106,11 @@ export default function Home() {
                 {t('common.organizationName')} <br />
                 <span className="text-primary italic animate-pulse-slow">{t('home.heroSuffix')}</span>
               </motion.h1>
-              <motion.p variants={fadeInUp} className="text-lg text-gray-600 mb-8 leading-relaxed">
-                {t('common.address')} - {t('common.listYear')}
-              </motion.p>
+              {/* <motion.div variants={fadeInUp} className="text-sm md:text-base text-gray-600 mb-8 leading-relaxed space-y-1">
+                <div className="font-bold">Reg. Office: {t('common.address')} - {t('common.listYear')}</div>
+                <div>Moradabad Correspondence: Apollo Laser Eye Hospital</div>
+                <div>Hasanpur Correspondence: Dr Vinod Hospital</div>
+              </motion.div> */}
 
               <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
                 <Link
@@ -355,9 +357,11 @@ export default function Home() {
               <motion.h2 variants={fadeInUp} className="font-heading text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#111827] mb-6 md:mb-8 leading-[1.1] tracking-tight">
                 {t('home.ctaTitle1')} <span className="text-primary italic">{t('home.ctaTitle2')}</span> <br className="hidden md:block" /> {t('home.ctaTitle3')}
               </motion.h2>
-              <motion.p variants={fadeInUp} className="text-[#374151] text-lg md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-                {t('common.organizationName')} - {t('common.address')}
-              </motion.p>
+              {/* <motion.div variants={fadeInUp} className="text-[#374151] text-base md:text-xl mb-12 max-w-3xl mx-auto leading-relaxed font-medium space-y-2">
+                <div className="font-bold text-2xl">{t('common.organizationName')}</div>
+                <div className="text-sm md:text-lg">Reg. Office: {t('common.address')}</div>
+                <div className="text-sm md:text-lg">Moradabad Correspondence: Apollo Laser Eye Hospital | Hasanpur Correspondence: Dr Vinod Hospital</div>
+              </motion.div> */}
 
 
               
