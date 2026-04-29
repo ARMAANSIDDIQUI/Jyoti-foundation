@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import WorkCard from '../components/WorkCard';
 import API_BASE_URL from '../utils/api.js';
+import { workActivities as fallbackProjectsData } from '../data/placeholderData';
 import { CardSkeleton } from '../components/Skeleton';
 import Loader from '../components/Loader';
 
@@ -16,17 +17,17 @@ export default function OurWork() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_BASE_URL}/projects`).then(res => res.json()).catch((err) => { console.error('Error fetching projects:', err); return []; }),
+      fetch(`${API_BASE_URL}/projects`).then(res => res.json()).catch((err) => { console.error('Error fetching projects:', err); return fallbackProjectsData; }),
       fetch(`${API_BASE_URL}/categories`).then(res => res.json()).catch((err) => { console.error('Error fetching categories:', err); return []; })
     ])
       .then(([projectsData, categoriesData]) => {
-        setProjects(Array.isArray(projectsData) ? projectsData : []);
+        setProjects(Array.isArray(projectsData) && projectsData.length > 0 ? projectsData : fallbackProjectsData);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
         setLoading(false);
       })
       .catch((err) => {
         console.error('Error fetching work data:', err);
-        setProjects([]);
+        setProjects(fallbackProjectsData);
         setLoading(false);
       });
   }, []);

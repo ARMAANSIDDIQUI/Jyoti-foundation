@@ -31,14 +31,14 @@ export default function About() {
   useEffect(() => {
 
     Promise.all([
-      fetch(`${API_BASE_URL}/members`).then(r => r.json()).catch(() => []),
-      fetch(`${API_BASE_URL}/stats`).then(r => r.json()).catch(() => []),
+      fetch(`${API_BASE_URL}/members`).then(r => r.json()).catch(() => fallbackMembersData),
+      fetch(`${API_BASE_URL}/stats`).then(r => r.json()).catch(() => fallbackStatsData),
       fetch(`${API_BASE_URL}/news-coverage`).then(r => r.json()).catch(() => []),
       fetch(`${API_BASE_URL}/videos`).then(r => r.json()).catch(() => []),
       fetch(`${API_BASE_URL}/gallery-images`).then(r => r.json()).catch(() => [])
     ]).then(([membersData, statsData, newsData, videosData, imagesData]) => {
-      setMemberList(Array.isArray(membersData) ? membersData : []);
-      setStats(Array.isArray(statsData) ? statsData : []);
+      setMemberList(Array.isArray(membersData) && membersData.length > 0 ? membersData : fallbackMembersData);
+      setStats(Array.isArray(statsData) && statsData.length > 0 ? statsData : fallbackStatsData);
       setNewsList(Array.isArray(newsData) ? newsData : []);
       setVideoList(Array.isArray(videosData) ? videosData : []);
       setImageList(Array.isArray(imagesData) ? imagesData : []);

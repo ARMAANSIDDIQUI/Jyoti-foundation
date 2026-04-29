@@ -5,6 +5,7 @@ import { MapPin, Play, Info, ArrowLeft, Calendar, Image as ImageIcon } from 'luc
 import { useTranslation } from 'react-i18next';
 import { generateSlug } from '../utils/slugify';
 import API_BASE_URL from '../utils/api.js';
+import { workActivities as fallbackProjectsData } from '../data/placeholderData';
 import Loader from '../components/Loader';
 
 // Animation variants
@@ -35,14 +36,15 @@ export default function ProjectDetails() {
     fetch(`${API_BASE_URL}/projects`)
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data)) {
-          const found = data.find(p => generateSlug(p.name) === slug);
-          setProject(found || null);
-        }
+        const sourceData = Array.isArray(data) && data.length > 0 ? data : fallbackProjectsData;
+        const found = sourceData.find(p => generateSlug(p.name) === slug);
+        setProject(found || null);
         setLoading(false);
       })
       .catch(err => {
         console.error('Error fetching project:', err);
+        const found = fallbackProjectsData.find(p => generateSlug(p.name) === slug);
+        setProject(found || null);
         setLoading(false);
       });
   }, [slug]);
