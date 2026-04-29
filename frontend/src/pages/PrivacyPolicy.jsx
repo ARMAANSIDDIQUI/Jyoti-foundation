@@ -27,7 +27,7 @@ export default function PrivacyPolicy() {
             </section>
             <section>
               <h2 className="text-xl font-bold text-text mb-4">4. Contact Us</h2>
-              <p>If you have any questions about this Privacy Policy, please contact us at info@jyoti-foundation.org.</p>
+              <p>If you have any questions about this Privacy Policy, please contact us at jyotifoundation@gmail.com.</p>
             </section>
           </div>
         </motion.div>
