@@ -1,4 +1,4 @@
-import { MapPin, Phone, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, ChevronLeft, ChevronRight, Activity } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
@@ -71,7 +71,7 @@ export default function HospitalCard({ hospital }) {
             <span>{hospital.phone}</span>
           </div>
           <div className="flex items-center gap-3 text-sm text-gray-600">
-            <Phone className="w-5 h-5 text-primary shrink-0 rotate-90" />
+            <Activity className="w-5 h-5 text-primary shrink-0" />
             <span>{isHindi && hospital.servicesHindi ? hospital.servicesHindi : hospital.services}</span>
           </div>
         </div>
