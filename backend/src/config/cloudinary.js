@@ -23,12 +23,17 @@ const storage = new CloudinaryStorage({
       format = 'jpg';
     }
 
-    return {
+    const params = {
       folder: folder,
       resource_type: resource_type,
-      allowed_formats: ['jpg', 'png', 'jpeg', 'mp4', 'mov', 'heic', 'heif', 'mkv', 'webm', 'avi'],
       ...(format && { format })
     };
+
+    if (resource_type !== 'video') {
+      params.allowed_formats = ['jpg', 'png', 'jpeg', 'heic', 'heif'];
+    }
+
+    return params;
   }
 });
 

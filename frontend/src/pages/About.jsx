@@ -218,6 +218,7 @@ export default function About() {
                         src={videoList[currentVideoIndex]?.videoUrl} 
                         className="w-full h-full object-cover" 
                         controls 
+                        preload="none"
                         poster={videoList[currentVideoIndex]?.videoUrl.replace('.mp4', '.jpg').replace('.mov', '.jpg')}
                       />
                     </motion.div>
