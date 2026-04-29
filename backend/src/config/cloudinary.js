@@ -11,29 +11,10 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    let folder = 'jyoti-foundation';
-    let resource_type = 'auto'; // Detects if it's image or video
-
-    if (file.fieldname === 'video') {
-      resource_type = 'video';
-    }
-
-    let format;
-    if (file.originalname && file.originalname.match(/\.(heic|heif)$/i)) {
-      format = 'jpg';
-    }
-
-    const params = {
+    return {
       folder: folder,
-      resource_type: resource_type,
-      ...(format && { format })
+      resource_type: 'auto'
     };
-
-    if (resource_type !== 'video') {
-      params.allowed_formats = ['jpg', 'png', 'jpeg', 'heic', 'heif'];
-    }
-
-    return params;
   }
 });
 
