@@ -12,7 +12,7 @@ export const hospitals = [
     phone: "+91 94122 36889",
     services: "Laser Surgery, Cataract, Glaucoma",
     servicesHindi: "लेजर सर्जरी, मोतियाबिंद, कालापानी",
-    image: "/apollo1rec.heic"
+    image: "/apollo1rec.jpg"
   },
   {
     id: 2,
