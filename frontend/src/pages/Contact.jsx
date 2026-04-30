@@ -94,10 +94,10 @@ export default function Contact() {
                 <div className="relative pl-6 border-l-2 border-primary/20">
                   <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary" />
                   <h4 className="font-bold text-text text-lg mb-2">Hasanpur Correspondence</h4>
-                  <p className="text-gray-700 text-sm mb-3">Dr Vinod Hospital<br/>407, City Rd, Hasanpur, UP 244241</p>
+                  <p className="text-gray-700 text-sm mb-3">Dr Vinod Hospital<br/>Mohalla Kayasthan, Hasanpur (Amroha), UP</p>
                   <div className="space-y-2">
-                    <p className="text-sm text-text flex items-center gap-2"><Phone className="w-4 h-4" /> +91 98711 22334</p>
-                    <p className="text-sm text-text flex items-center gap-2"><Clock className="w-4 h-4" /> {t('contact.emergencyRange')}</p>
+                    <p className="text-sm text-text flex items-center gap-2"><Phone className="w-4 h-4" /> +91 94106 77222</p>
+                    <p className="text-sm text-text flex items-center gap-2"><Clock className="w-4 h-4" /> {t('contact.vinodTiming')}</p>
                   </div>
                 </div>
 

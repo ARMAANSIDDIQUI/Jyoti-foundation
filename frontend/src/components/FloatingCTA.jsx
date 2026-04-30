@@ -13,7 +13,7 @@ export default function FloatingCTA() {
     },
     { 
       name: 'Dr. Vinod Hospital', 
-      phone: '+91 98711 22334', 
+      phone: '+91 94106 77222', 
       insta: 'https://www.instagram.com/drvinod_hospital_6889?igsh=MW1taHIxeW1iZnlmNg==' 
     }
   ];
