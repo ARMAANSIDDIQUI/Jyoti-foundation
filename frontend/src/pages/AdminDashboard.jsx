@@ -12,6 +12,7 @@ import { useAuth } from '../context/AuthContext';
 
 import API_BASE_URL from '../utils/api.js';
 import { handleAuthError } from '../utils/auth';
+import { DashboardSkeleton } from '../components/Skeleton';
 
 const API_BASE = API_BASE_URL;
 
@@ -313,8 +314,8 @@ export default function AdminDashboard() {
         </header>
 
         {loading ? (
-          <div className="flex items-center justify-center p-20 text-primary">
-            <Loader2 className="w-10 h-10 animate-spin" />
+          <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 min-h-[500px]">
+            <DashboardSkeleton />
           </div>
         ) : (
           <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 min-h-[500px]">

@@ -8,8 +8,7 @@ import { hospitals, workActivities, stats as fallbackStats } from '../data/place
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import API_BASE_URL from '../utils/api.js';
-import { StatSkeleton, CardSkeleton } from '../components/Skeleton';
-import Loader from '../components/Loader';
+import { StatSkeleton, CardSkeleton, HeroSkeleton } from '../components/Skeleton';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -139,7 +138,7 @@ export default function Home() {
                 <AnimatePresence>
                   {loadingHero ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                      <Loader />
+                      <HeroSkeleton />
                     </div>
                   ) : heroSlides.length > 0 ? (
                     <motion.img

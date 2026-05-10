@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { generateSlug } from '../utils/slugify';
 import API_BASE_URL from '../utils/api.js';
 import { workActivities as fallbackProjectsData } from '../data/placeholderData';
-import Loader from '../components/Loader';
+import { ProjectDetailsSkeleton } from '../components/Skeleton';
 
 // Animation variants
 const fadeInUp = {
@@ -57,11 +57,7 @@ export default function ProjectDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader fullScreen />
-      </div>
-    );
+    return <ProjectDetailsSkeleton />;
   }
 
   if (!project) {

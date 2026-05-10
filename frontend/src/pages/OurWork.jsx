@@ -5,7 +5,6 @@ import WorkCard from '../components/WorkCard';
 import API_BASE_URL from '../utils/api.js';
 import { workActivities as fallbackProjectsData } from '../data/placeholderData';
 import { CardSkeleton } from '../components/Skeleton';
-import Loader from '../components/Loader';
 
 export default function OurWork() {
   const { t, i18n } = useTranslation();
