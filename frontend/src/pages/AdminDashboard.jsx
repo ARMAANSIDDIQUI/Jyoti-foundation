@@ -133,7 +133,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleFileChange = (e, field, maxSizeMB = 5) => {
+  const handleFileChange = (e, field, maxSizeMB = 4) => {
     const file = e.target.files[0];
     if (file && file.size > maxSizeMB * 1024 * 1024) {
       setAlertState({ show: true, message: `File size exceeds ${maxSizeMB}MB limit`, type: 'error' });
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
     setCurrentItem({ ...currentItem, [field]: file });
   };
 
-  const handleMultipleFilesChange = (e, field, maxSizeMB = 5, maxCount = 3) => {
+  const handleMultipleFilesChange = (e, field, maxSizeMB = 4, maxCount = 3) => {
     const files = Array.from(e.target.files);
     const validFiles = files.filter(f => f.size <= maxSizeMB * 1024 * 1024).slice(0, maxCount);
     if (validFiles.length < files.length) {
@@ -222,8 +222,15 @@ export default function AdminDashboard() {
       } else {
         let errMessage = 'Unknown error';
         try {
-          const errData = await response.json();
-          errMessage = errData.message || errMessage;
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const errData = await response.json();
+            errMessage = errData.message || errMessage;
+          } else {
+            const textData = await response.text();
+            errMessage = textData.substring(0, 50) || response.statusText;
+            if (response.status === 413) errMessage = 'File too large (Vercel limit is 4.5MB)';
+          }
         } catch (e) {
           console.error("Failed to parse error response", e);
         }
