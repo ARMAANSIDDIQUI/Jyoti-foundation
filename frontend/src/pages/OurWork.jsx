@@ -16,17 +16,17 @@ export default function OurWork() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_BASE_URL}/projects`).then(res => res.json()).catch((err) => { console.error('Error fetching projects:', err); return fallbackProjectsData; }),
+      fetch(`${API_BASE_URL}/projects`).then(res => res.json()).catch((err) => { console.error('Error fetching projects:', err); return []; }),
       fetch(`${API_BASE_URL}/categories`).then(res => res.json()).catch((err) => { console.error('Error fetching categories:', err); return []; })
     ])
       .then(([projectsData, categoriesData]) => {
-        setProjects(Array.isArray(projectsData) && projectsData.length > 0 ? projectsData : fallbackProjectsData);
+        setProjects(Array.isArray(projectsData) ? projectsData : []);
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
         setLoading(false);
       })
       .catch((err) => {
         console.error('Error fetching work data:', err);
-        setProjects(fallbackProjectsData);
+        setProjects([]);
         setLoading(false);
       });
   }, []);

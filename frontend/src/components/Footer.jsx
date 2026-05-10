@@ -25,13 +25,13 @@ export default function Footer() {
             </p>
 
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors">
+              <a href="https://facebook.com/share/18RGM3WPeu/" target="_blank" rel="noreferrer" title="Apollo Laser Eye Hospital Facebook" className="w-10 h-10 rounded-full bg-[#1877F2]/10 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2] hover:text-white transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors">
-                <Twitter className="w-5 h-5" />
+              <a href="https://www.instagram.com/apolloeyecare?igsh=MWdkcmFwdjQ4MzNzZQ==" target="_blank" rel="noreferrer" title="Apollo Laser Eye Hospital Instagram" className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-pink-500 hover:to-purple-600 hover:text-white transition-all">
+                <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors">
+              <a href="https://www.instagram.com/drvinod_hospital_6889?igsh=MW1taHIxeW1iZnlmNg==" target="_blank" rel="noreferrer" title="Dr. Vinod Hospital Instagram" className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-pink-500 hover:to-purple-600 hover:text-white transition-all">
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
@@ -42,7 +42,7 @@ export default function Footer() {
             <h3 className="font-heading font-semibold text-lg mb-6">{t('footer.quickLinks')}</h3>
             <ul className="space-y-4">
               <li><Link to="/about" className="text-gray-600 hover:text-primary transition-colors">{t('common.nav.about')}</Link></li>
-              <li><Link to="/our-work" className="text-gray-600 hover:text-primary transition-colors">{t('footer.hospitals')}</Link></li>
+              <li><Link to="/hospitals" className="text-gray-600 hover:text-primary transition-colors">{t('footer.hospitals')}</Link></li>
               <li><Link to="/donate" className="text-gray-600 hover:text-primary transition-colors">{t('common.nav.donate')}</Link></li>
               <li><Link to="/contact" className="text-gray-600 hover:text-primary transition-colors">{t('common.nav.contact')}</Link></li>
             </ul>
@@ -53,13 +53,17 @@ export default function Footer() {
           <div>
             <h3 className="font-heading font-semibold text-lg mb-6">{t('footer.hospitals')}</h3>
             <ul className="space-y-4">
-              <li className="text-gray-600">
-                <span className="block font-medium text-text mb-1">Apollo Laser Eye Hospital</span>
-                Moradabad, UP
+              <li>
+                <a href="https://www.google.com/maps/search/?api=1&query=Apollo+Laser+Eye+Hospital+Moradabad" target="_blank" rel="noreferrer" className="block text-gray-600 hover:text-primary transition-colors">
+                  <span className="block font-medium text-text mb-1">Apollo Laser Eye Hospital</span>
+                  Moradabad, UP
+                </a>
               </li>
-              <li className="text-gray-600">
-                <span className="block font-medium text-text mb-1">Dr Vinod Hospital</span>
-                Hasanpur, UP
+              <li>
+                <a href="https://www.google.com/maps/search/?api=1&query=Dr+Vinod+Hospital+Hasanpur" target="_blank" rel="noreferrer" className="block text-gray-600 hover:text-primary transition-colors">
+                  <span className="block font-medium text-text mb-1">Dr Vinod Hospital</span>
+                  Hasanpur, UP
+                </a>
               </li>
             </ul>
           </div>

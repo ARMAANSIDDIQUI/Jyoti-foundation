@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { Calendar, Newspaper } from 'lucide-react';
 
-const NewsCard = ({ news }) => {
+const NewsCard = ({ news, onClick }) => {
   const { i18n } = useTranslation();
   const currentLang = i18n.language;
 
@@ -18,7 +18,8 @@ const NewsCard = ({ news }) => {
   return (
     <motion.div
       whileHover={{ y: -5 }}
-      className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full"
+      onClick={onClick}
+      className={`bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full ${onClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
     >
       <div className="relative h-64 overflow-hidden group">
         <img

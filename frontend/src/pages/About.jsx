@@ -27,6 +27,7 @@ export default function About() {
   const [imageList, setImageList] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [selectedNews, setSelectedNews] = useState(null);
 
   useEffect(() => {
 
@@ -383,12 +384,78 @@ export default function About() {
                     visible: { opacity: 1, scale: 1, transition: { duration: 0.6, delay: index * 0.1 } }
                   }}
                 >
-                  <NewsCard news={news} />
+                  <NewsCard news={news} onClick={() => setSelectedNews(news)} />
                 </motion.div>
               ))}
             </div>
           </div>
         )}
+
+        {/* News Modal */}
+        <AnimatePresence>
+          {selectedNews && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedNews(null)}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="bg-white w-full max-w-2xl rounded-[2rem] shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[85vh]"
+              >
+                <div className="relative h-64 sm:h-80 w-full shrink-0">
+                  <img
+                    src={selectedNews.imageUrl}
+                    alt={i18n.language === 'en' ? selectedNews.title : (selectedNews.titleHindi || selectedNews.title)}
+                    className="w-full h-full object-cover"
+                  />
+                  <button 
+                    onClick={() => setSelectedNews(null)}
+                    className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-md transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  </button>
+                </div>
+                <div className="p-6 sm:p-8 overflow-y-auto custom-scrollbar">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full uppercase tracking-wider">
+                      {selectedNews.source || 'Media Coverage'}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      {selectedNews.date ? new Date(selectedNews.date).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'hi-IN', {
+                        day: 'numeric', month: 'long', year: 'numeric'
+                      }) : ''}
+                    </span>
+                  </div>
+                  <h3 className="font-heading text-2xl sm:text-3xl font-bold text-text mb-4 leading-tight">
+                    {i18n.language === 'en' ? selectedNews.title : (selectedNews.titleHindi || selectedNews.title)}
+                  </h3>
+                  <div className="text-gray-600 leading-relaxed space-y-4 whitespace-pre-wrap">
+                    {i18n.language === 'en' ? selectedNews.description : (selectedNews.descriptionHindi || selectedNews.description)}
+                  </div>
+                  {selectedNews.link && (
+                    <div className="mt-8 pt-6 border-t border-gray-100">
+                      <a 
+                        href={selectedNews.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/30"
+                      >
+                        Read Full Article
+                        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
 
         {/* Team Section */}
         <motion.div

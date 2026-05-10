@@ -5,6 +5,7 @@ import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import About from './pages/About';
 import OurWork from './pages/OurWork';
+import Hospitals from './pages/Hospitals';
 import Donate from './pages/Donate';
 import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
+            <Route path="hospitals" element={<Hospitals />} />
             <Route path="our-work" element={<OurWork />} />
             <Route path="projects/:slug" element={<ProjectDetails />} />
             <Route path="donate" element={<Donate />} />

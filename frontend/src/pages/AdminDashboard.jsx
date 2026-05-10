@@ -425,6 +425,7 @@ export default function AdminDashboard() {
                     ))}
                   </tbody>
                 </table>
+                {data.members.length === 0 && <div className="text-center text-gray-500 py-10 border-t border-gray-100">No members found.</div>}
               </div>
             )}
 
@@ -449,6 +450,7 @@ export default function AdminDashboard() {
 
                   </div>
                 ))}
+                {data.projects.length === 0 && <div className="col-span-full text-center text-gray-500 py-10">No projects found.</div>}
               </div>
             )}
 
@@ -468,6 +470,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+                {data.newsCoverage.length === 0 && <div className="col-span-full text-center text-gray-500 py-10">No news coverage found.</div>}
               </div>
             )}
 
@@ -487,6 +490,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+                {data.videos.length === 0 && <div className="col-span-full text-center text-gray-500 py-10">No videos found.</div>}
               </div>
             )}
 
@@ -506,6 +510,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+                {data.galleryImages.length === 0 && <div className="col-span-full text-center text-gray-500 py-10">No gallery images found.</div>}
               </div>
             )}
 
@@ -599,6 +604,7 @@ export default function AdminDashboard() {
                     ))}
                   </tbody>
                 </table>
+                {data.stats.length === 0 && <div className="text-center text-gray-500 py-10">No stats found.</div>}
               </div>
             )}
 
@@ -625,6 +631,7 @@ export default function AdminDashboard() {
                     ))}
                   </tbody>
                 </table>
+                {data.categories.length === 0 && <div className="text-center text-gray-500 py-10">No categories found.</div>}
               </div>
             )}
 
@@ -641,6 +648,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+                {data.heroSlides.length === 0 && <div className="col-span-full text-center text-gray-500 py-10">No hero slides found.</div>}
               </div>
             )}
           </div>

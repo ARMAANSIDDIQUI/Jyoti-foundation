@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, Instagram, X } from 'lucide-react';
+import { Phone, Instagram, Facebook, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function FloatingCTA() {
@@ -9,7 +9,8 @@ export default function FloatingCTA() {
     { 
       name: 'Apollo Laser Eye Hospital', 
       phone: '+91 94122 36889', 
-      insta: 'https://www.instagram.com/apolloeyecare?igsh=MWdkcmFwdjQ4MzNzZQ==' 
+      insta: 'https://www.instagram.com/apolloeyecare?igsh=MWdkcmFwdjQ4MzNzZQ==',
+      facebook: 'https://facebook.com/share/18RGM3WPeu/'
     },
     { 
       name: 'Dr. Vinod Hospital', 
@@ -24,16 +25,23 @@ export default function FloatingCTA() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-[90] flex justify-around items-center">
         <button 
           onClick={() => setActiveModal('contact')}
-          className="flex-1 flex items-center justify-center gap-2 text-primary font-bold py-4 hover:bg-gray-50 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 text-primary font-bold py-4 text-sm hover:bg-gray-50 transition-colors"
         >
-          <Phone className="w-5 h-5" /> Contact
+          <Phone className="w-4 h-4" /> Contact
+        </button>
+        <div className="w-px h-8 bg-gray-200"></div>
+        <button 
+          onClick={() => setActiveModal('facebook')}
+          className="flex-1 flex items-center justify-center gap-1.5 text-[#1877F2] font-bold py-4 text-sm hover:bg-gray-50 transition-colors"
+        >
+          <Facebook className="w-4 h-4" /> Facebook
         </button>
         <div className="w-px h-8 bg-gray-200"></div>
         <button 
           onClick={() => setActiveModal('insta')}
-          className="flex-1 flex items-center justify-center gap-2 text-pink-600 font-bold py-4 hover:bg-gray-50 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 text-pink-600 font-bold py-4 text-sm hover:bg-gray-50 transition-colors"
         >
-          <Instagram className="w-5 h-5" /> Instagram
+          <Instagram className="w-4 h-4" /> Instagram
         </button>
       </div>
 
@@ -56,22 +64,24 @@ export default function FloatingCTA() {
             >
               <div className="flex justify-between items-center mb-6">
                 <h3 className="font-heading font-bold text-xl text-text">
-                  {activeModal === 'contact' ? 'Contact Us' : 'Our Instagram'}
+                  {activeModal === 'contact' ? 'Contact Us' : activeModal === 'facebook' ? 'Our Facebook' : 'Our Instagram'}
                 </h3>
                 <button onClick={() => setActiveModal(null)} className="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <div className="space-y-4">
-                {hospitals.map((h, i) => (
+                {hospitals.filter(h => activeModal === 'facebook' ? h.facebook : true).map((h, i) => (
                   <a 
                     key={i}
-                    href={activeModal === 'contact' ? `tel:${h.phone.replace(/\s+/g, '')}` : h.insta}
-                    target={activeModal === 'insta' ? "_blank" : undefined}
+                    href={activeModal === 'contact' ? `tel:${h.phone.replace(/\\s+/g, '')}` : activeModal === 'facebook' ? h.facebook : h.insta}
+                    target={activeModal !== 'contact' ? "_blank" : undefined}
                     rel="noreferrer"
                     className={`flex items-center justify-between p-4 rounded-2xl border transition-all active:scale-[0.98] ${
                       activeModal === 'contact' 
                         ? 'border-primary/20 bg-primary/5 text-primary hover:bg-primary/10' 
+                        : activeModal === 'facebook'
+                        ? 'border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100'
                         : 'border-pink-200 bg-pink-50 text-pink-600 hover:bg-pink-100'
                     }`}
                   >
@@ -108,6 +118,27 @@ export default function FloatingCTA() {
           {/* Icon Button */}
           <button className="w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-110 hover:bg-primary/90 transition-all duration-300 relative z-10">
             <Phone className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Facebook Dropdown Group */}
+        <div className="relative group/facebook">
+          {/* Dropdown Card */}
+          <div className="absolute left-full ml-4 bottom-0 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 w-72 opacity-0 invisible group-hover/facebook:opacity-100 group-hover/facebook:visible transition-all duration-300 -translate-x-4 group-hover/facebook:translate-x-0 z-50">
+            <div className="absolute left-[-6px] bottom-6 w-3 h-3 bg-white border-l border-b border-gray-100 rotate-45"></div>
+            <h4 className="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wider pl-2">Follow Us</h4>
+            <div className="space-y-2">
+              {hospitals.filter(h => h.facebook).map((h, i) => (
+                <a key={i} href={h.facebook} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3 hover:bg-blue-50 rounded-xl transition-colors text-blue-600 border border-transparent hover:border-blue-100">
+                  <span className="text-sm font-bold text-gray-700">{h.name}</span>
+                  <Facebook className="w-5 h-5" />
+                </a>
+              ))}
+            </div>
+          </div>
+          {/* Icon Button */}
+          <button className="w-14 h-14 bg-[#1877F2] text-white rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center hover:scale-110 transition-all duration-300 relative z-10">
+            <Facebook className="w-6 h-6" />
           </button>
         </div>
 

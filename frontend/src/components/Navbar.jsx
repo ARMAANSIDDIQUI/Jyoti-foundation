@@ -7,6 +7,7 @@ import LanguageToggle from './LanguageToggle';
 const navLinks = [
   { key: 'home', path: '/' },
   { key: 'about', path: '/about' },
+  { key: 'hospitals', path: '/hospitals', label: 'Our Hospitals' },
   { key: 'projects', path: '/our-work' },
   { key: 'contact', path: '/contact' }
 ];
@@ -44,7 +45,7 @@ export default function Navbar() {
                     location.pathname === link.path ? 'text-primary' : 'text-gray-600 hover:text-primary'
                   }`}
                 >
-                  {t(`common.nav.${link.key}`)}
+                  {link.label || t(`common.nav.${link.key}`)}
                 </Link>
               ))}
             </div>
@@ -85,7 +86,7 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className="block px-3 py-4 text-base font-medium text-gray-600 hover:text-primary hover:bg-gray-50 rounded-xl"
               >
-                {t(`common.nav.${link.key}`)}
+                {link.label || t(`common.nav.${link.key}`)}
               </Link>
             ))}
             <div className="pt-4 px-3">
