@@ -21,7 +21,7 @@ exports.submitContactForm = async (req, res) => {
     // 3. Email to Admin
     const adminMailOptions = {
       from: `"Jyoti Foundation" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER, // Foundation email
+      to: `jyotifoundation@gmail.com, ${process.env.GMAIL_USER}`, // Foundation email
       subject: `New Inquiry: ${name}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #ee580c; border-radius: 10px; padding: 20px;">

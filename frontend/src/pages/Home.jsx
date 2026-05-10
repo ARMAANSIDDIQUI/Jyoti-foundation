@@ -4,7 +4,7 @@ import { ArrowRight, HeartPulse, Heart } from 'lucide-react';
 import Counter from '../components/Counter';
 import HospitalCard from '../components/HospitalCard';
 import WorkCard from '../components/WorkCard';
-import { hospitals, workActivities, stats as fallbackStats } from '../data/placeholderData';
+import { hospitals, stats as fallbackStats } from '../data/placeholderData';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import API_BASE_URL from '../utils/api.js';
@@ -49,10 +49,10 @@ export default function Home() {
     // Fetch projects for initiatives
     fetch(`${API_BASE_URL}/projects`)
       .then(r => r.json())
-      .then(data => setProjects(Array.isArray(data) && data.length > 0 ? data.slice(0, 4) : workActivities.slice(0, 4)))
+      .then(data => setProjects(Array.isArray(data) && data.length > 0 ? data.slice(0, 4) : []))
       .catch(err => {
         console.error('Error fetching projects:', err);
-        setProjects(workActivities.slice(0, 4));
+        setProjects([]);
       })
       .finally(() => setLoadingProjects(false));
 
@@ -236,7 +236,7 @@ export default function Home() {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "50px" }}
             variants={fadeInUp}
             className="text-center max-w-2xl mx-auto mb-16"
           >
@@ -259,7 +259,7 @@ export default function Home() {
                   key={hospital.id}
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
+                  viewport={{ once: true, margin: "50px" }}
                   variants={{
                     hidden: { opacity: 0, y: 40 },
                     visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: index * 0.2 } }
@@ -281,7 +281,7 @@ export default function Home() {
               <motion.div
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: true, margin: "50px" }}
                 variants={fadeInUp}
                 className="max-w-2xl"
               >
@@ -315,7 +315,7 @@ export default function Home() {
                   key={project._id}
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
+                  viewport={{ once: true, margin: "50px" }}
                   variants={{
                     hidden: { opacity: 0, y: 40 },
                     visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: index * 0.1 } }
