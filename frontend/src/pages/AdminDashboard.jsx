@@ -13,6 +13,7 @@ import { useAuth } from '../context/AuthContext';
 import API_BASE_URL from '../utils/api.js';
 import { handleAuthError } from '../utils/auth';
 import { DashboardSkeleton } from '../components/Skeleton';
+import { formatDate } from '../utils/date';
 
 const API_BASE = API_BASE_URL;
 
@@ -468,7 +469,7 @@ export default function AdminDashboard() {
                     <img src={news.imageUrl} alt={news.title} className="w-full aspect-video object-cover rounded-2xl mb-4" />
                     <div className="flex-grow">
                       <h3 className="font-bold text-text text-lg mb-1">{news.title}</h3>
-                      <p className="text-gray-500 text-sm mb-2">{news.source} • {new Date(news.date).toLocaleDateString()}</p>
+                      <p className="text-gray-500 text-sm mb-2">{news.source} • {formatDate(news.date)}</p>
                       <p className="text-gray-600 text-xs line-clamp-2">{news.description}</p>
                     </div>
                     <div className="flex gap-2 mt-4 mt-auto">
@@ -488,7 +489,7 @@ export default function AdminDashboard() {
                     <video src={video.videoUrl} controls className="w-full aspect-video object-cover rounded-2xl mb-4" />
                     <div className="flex-grow">
                       <h3 className="font-bold text-text text-lg mb-1">{video.title}</h3>
-                      <p className="text-gray-500 text-sm mb-2">{new Date(video.date).toLocaleDateString()}</p>
+                      <p className="text-gray-500 text-sm mb-2">{formatDate(video.date)}</p>
                       <p className="text-gray-600 text-xs line-clamp-2">{video.description}</p>
                     </div>
                     <div className="flex gap-2 mt-4 mt-auto">
@@ -508,7 +509,7 @@ export default function AdminDashboard() {
                     <img src={img.imageUrl} alt={img.title} className="w-full aspect-video object-cover rounded-2xl mb-4" />
                     <div className="flex-grow">
                       <h3 className="font-bold text-text text-lg mb-1">{img.title}</h3>
-                      <p className="text-gray-500 text-sm mb-2">{new Date(img.date).toLocaleDateString()}</p>
+                      <p className="text-gray-500 text-sm mb-2">{formatDate(img.date)}</p>
                       <p className="text-gray-600 text-xs line-clamp-2">{img.description}</p>
                     </div>
                     <div className="flex gap-2 mt-4 mt-auto">
@@ -575,7 +576,7 @@ export default function AdminDashboard() {
                           {contact.phone && <span>• {contact.phone}</span>}
                         </div>
                       </div>
-                      <span className="text-xs text-gray-400">{new Date(contact.createdAt).toLocaleDateString()}</span>
+                      <span className="text-xs text-gray-400">{formatDate(contact.createdAt)}</span>
                     </div>
                     <p className="text-gray-600 bg-gray-50 p-4 rounded-xl text-sm italic">
                       "{contact.message}"

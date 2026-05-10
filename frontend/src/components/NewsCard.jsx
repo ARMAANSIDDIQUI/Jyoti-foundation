@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { Calendar, Newspaper } from 'lucide-react';
+import { formatDate } from '../utils/date';
 
 const NewsCard = ({ news, onClick }) => {
   const { i18n } = useTranslation();
@@ -9,11 +10,7 @@ const NewsCard = ({ news, onClick }) => {
 
   const title = currentLang === 'en' ? news.title : (news.titleHindi || news.title);
   const description = currentLang === 'en' ? news.description : (news.descriptionHindi || news.description);
-  const date = news.date ? new Date(news.date).toLocaleDateString(currentLang === 'en' ? 'en-US' : 'hi-IN', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  }) : '';
+  const date = formatDate(news.date);
 
   return (
     <motion.div

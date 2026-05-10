@@ -8,6 +8,7 @@ import API_BASE_URL from '../utils/api.js';
 import { members as fallbackMembersData, stats as fallbackStatsData } from '../data/placeholderData';
 import { StatSkeleton, MemberSkeleton, CardSkeleton } from '../components/Skeleton';
 import NewsCard from '../components/NewsCard';
+import { formatDate } from '../utils/date';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -427,9 +428,7 @@ export default function About() {
                       {selectedNews.source || 'Media Coverage'}
                     </span>
                     <span className="text-sm text-gray-500">
-                      {selectedNews.date ? new Date(selectedNews.date).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'hi-IN', {
-                        day: 'numeric', month: 'long', year: 'numeric'
-                      }) : ''}
+                      {formatDate(selectedNews.date)}
                     </span>
                   </div>
                   <h3 className="font-heading text-2xl sm:text-3xl font-bold text-text mb-4 leading-tight">

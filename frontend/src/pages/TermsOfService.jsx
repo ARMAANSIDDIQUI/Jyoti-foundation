@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
 
+import { formatDate } from '../utils/date';
+
 export default function TermsOfService() {
   return (
     <div className="pt-20 pb-32">
@@ -12,7 +14,7 @@ export default function TermsOfService() {
         >
           <h1 className="font-heading text-3xl font-bold mb-8">Terms of Service</h1>
           <div className="prose prose-blue max-w-none text-gray-600 space-y-6">
-            <p>Last updated: {new Date().toLocaleDateString()}</p>
+            <p>Last updated: {formatDate(new Date())}</p>
             <section>
               <h2 className="text-xl font-bold text-text mb-4">1. Acceptance of Terms</h2>
               <p>By accessing or using the Jyoti Foundation website, you agree to be bound by these Terms of Service.</p>

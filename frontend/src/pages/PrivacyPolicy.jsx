@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
 
+import { formatDate } from '../utils/date';
+
 export default function PrivacyPolicy() {
   return (
     <div className="pt-20 pb-32">
@@ -12,7 +14,7 @@ export default function PrivacyPolicy() {
         >
           <h1 className="font-heading text-3xl font-bold mb-8">Privacy Policy</h1>
           <div className="prose prose-blue max-w-none text-gray-600 space-y-6">
-            <p>Last updated: {new Date().toLocaleDateString()}</p>
+            <p>Last updated: {formatDate(new Date())}</p>
             <section>
               <h2 className="text-xl font-bold text-text mb-4">1. Information We Collect</h2>
               <p>We collect information you provide directly to us through our contact form and donation processes, including your name, email address, phone number, and any other information you choose to provide.</p>

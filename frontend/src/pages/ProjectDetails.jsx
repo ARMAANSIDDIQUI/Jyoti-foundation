@@ -7,6 +7,7 @@ import { generateSlug } from '../utils/slugify';
 import API_BASE_URL from '../utils/api.js';
 
 import { ProjectDetailsSkeleton } from '../components/Skeleton';
+import { formatDate } from '../utils/date';
 
 // Animation variants
 const fadeInUp = {
@@ -81,7 +82,7 @@ export default function ProjectDetails() {
   const location = isHindi ? (project.locationHindi || project.location) : project.location;
   const category = isHindi ? (project.categoryHindi || project.category) : project.category;
 
-  const createdDate = project.createdAt ? new Date(project.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+  const createdDate = formatDate(project.createdAt);
 
   return (
     <div className="bg-gray-50 min-h-screen overflow-hidden">
