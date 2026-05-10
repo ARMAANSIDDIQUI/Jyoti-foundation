@@ -350,7 +350,7 @@ export default function AdminDashboard() {
                   <h3 className="text-purple-700 font-bold text-lg mb-1">News Coverage</h3>
                   <p className="text-4xl font-bold text-purple-900">{data.newsCoverage.length}</p>
                 </div>
-                {data.dbStats && (
+                {data.dbStats && !data.dbStats.message && typeof data.dbStats.usedStorageBytes === 'number' ? (
                   <div className="p-8 bg-orange-50 rounded-3xl border border-orange-100">
                     <div className="flex justify-between items-start mb-4">
                       <div className="p-3 bg-orange-100 rounded-2xl text-orange-600">
@@ -366,6 +366,16 @@ export default function AdminDashboard() {
                         {(data.dbStats.usedStorageBytes / (1024 * 1024)).toFixed(2)} MB used of {(data.dbStats.maxStorageBytes / (1024 * 1024)).toFixed(0)} MB
                       </p>
                     </div>
+                  </div>
+                ) : data.dbStats && (
+                  <div className="p-8 bg-orange-50 rounded-3xl border border-orange-100 opacity-70">
+                     <div className="flex justify-between items-start mb-4">
+                      <div className="p-3 bg-orange-100 rounded-2xl text-orange-600">
+                        <Database className="w-6 h-6" />
+                      </div>
+                    </div>
+                    <h3 className="text-orange-700 font-bold text-lg mb-1">Database Space</h3>
+                    <p className="text-orange-900 text-sm font-medium">Stats unavailable in Free Tier</p>
                   </div>
                 )}
               </div>
