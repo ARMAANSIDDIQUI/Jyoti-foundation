@@ -733,8 +733,8 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Profile Image <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
-                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Profile Image <span className="text-red-400 lowercase normal-case">(Max 4MB)</span></label>
+                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 4)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90" />
                     </div>
                     <div>
                       <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Display Order</label>
@@ -764,13 +764,13 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Project Images (Max 3) <span className="text-red-400 lowercase normal-case">(Max 5MB each)</span></label>
-                      <input type="file" multiple accept="image/*" onChange={e => handleMultipleFilesChange(e, 'imageFiles', 5, 3)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Project Images (Max 3) <span className="text-red-400 lowercase normal-case">(Max 4MB each)</span></label>
+                      <input type="file" multiple accept="image/*" onChange={e => handleMultipleFilesChange(e, 'imageFiles', 4, 3)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Cloudinary Video <span className="text-red-400 lowercase normal-case">(Max 50MB)</span></label>
-                        <input type="file" accept="video/*" onChange={e => handleFileChange(e, 'videoFile', 50)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Cloudinary Video <span className="text-red-400 lowercase normal-case">(Max 4MB - Vercel Limit)</span></label>
+                        <input type="file" accept="video/*" onChange={e => handleFileChange(e, 'videoFile', 4)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
                       </div>
                       <div>
                         <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">YouTube Link</label>
@@ -827,8 +827,8 @@ export default function AdminDashboard() {
                 ) : activeTab === 'heroSlides' ? (
                   <>
                     <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Hero Background Image <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
-                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
+                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Hero Background Image <span className="text-red-400 lowercase normal-case">(Max 4MB)</span></label>
+                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 4)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
                     </div>
 
 
@@ -864,8 +864,8 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">News Image / Clipping <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
-                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">News Image / Clipping <span className="text-red-400 lowercase normal-case">(Max 4MB)</span></label>
+                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 4)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
                     </div>
                     <div>
                       <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
@@ -893,8 +893,8 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Video <span className="text-red-400 lowercase normal-case">(Max 50MB)</span></label>
-                      <input type="file" accept="video/*" onChange={e => handleFileChange(e, 'videoFile', 50)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Video <span className="text-red-400 lowercase normal-case">(Max 4MB - Vercel Limit)</span></label>
+                      <input type="file" accept="video/*" onChange={e => handleFileChange(e, 'videoFile', 4)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
                     </div>
                     <div>
                       <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
@@ -918,8 +918,8 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Image <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
-                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Image <span className="text-red-400 lowercase normal-case">(Max 4MB)</span></label>
+                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 4)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
                     </div>
                     <div>
                       <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
@@ -932,8 +932,8 @@ export default function AdminDashboard() {
                   </>
                 ) : activeTab === 'hospitalImages' ? (
                   <div>
-                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Select New Image <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
-                    <input type="file" accept="image/*" required onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Select New Image <span className="text-red-400 lowercase normal-case">(Max 4MB)</span></label>
+                    <input type="file" accept="image/*" required onChange={e => handleFileChange(e, 'imageFile', 4)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
                   </div>
                 ) : (
                   <>
