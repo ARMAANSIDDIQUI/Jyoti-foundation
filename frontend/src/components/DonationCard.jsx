@@ -15,8 +15,8 @@ export default function DonationCard({ option }) {
       </p>
       <div className="pt-6 border-t border-gray-50">
         <div className="text-2xl font-bold text-text mb-6">₹{option.amount.toLocaleString()}</div>
-        <button className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-xl transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2">
-          {t('common.nav.donate')} <ArrowRight className="w-4 h-4" />
+        <button disabled className="w-full bg-gray-200 text-gray-500 font-bold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-not-allowed">
+          Available Soon <ArrowRight className="w-4 h-4 opacity-50" />
         </button>
       </div>
     </div>

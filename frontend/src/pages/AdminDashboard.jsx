@@ -133,6 +133,25 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleFileChange = (e, field, maxSizeMB = 5) => {
+    const file = e.target.files[0];
+    if (file && file.size > maxSizeMB * 1024 * 1024) {
+      setAlertState({ show: true, message: `File size exceeds ${maxSizeMB}MB limit`, type: 'error' });
+      e.target.value = '';
+      return;
+    }
+    setCurrentItem({ ...currentItem, [field]: file });
+  };
+
+  const handleMultipleFilesChange = (e, field, maxSizeMB = 5, maxCount = 3) => {
+    const files = Array.from(e.target.files);
+    const validFiles = files.filter(f => f.size <= maxSizeMB * 1024 * 1024).slice(0, maxCount);
+    if (validFiles.length < files.length) {
+      setAlertState({ show: true, message: `Some files skipped (exceeds ${maxSizeMB}MB limit or max count)`, type: 'error' });
+    }
+    setCurrentItem({ ...currentItem, [field]: validFiles });
+  };
+
   const submitSave = async () => {
     setIsActionLoading(true);
     const type = activeTab === 'members' ? 'members' : 
@@ -146,34 +165,45 @@ export default function AdminDashboard() {
     const url = currentItem._id ? `${API_BASE}/${type}/${currentItem._id}` : `${API_BASE}/${type}`;
 
     const formData = new FormData();
+    if (currentItem.imageFile) {
+      formData.append('image', currentItem.imageFile);
+    }
+    if (currentItem.videoFile) {
+      formData.append('video', currentItem.videoFile);
+    }
+    if (currentItem.imageFiles) {
+      currentItem.imageFiles.forEach(file => formData.append('images', file));
+    }
+
+    const excludedKeys = ['image', 'imageFile', 'images', 'imageFiles', 'video', 'videoFile', '_id', '__v'];
     Object.keys(currentItem).forEach(key => {
-      if ((key === 'image' || key === 'imageFile') && currentItem.imageFile) {
-        formData.append('image', currentItem.imageFile);
-      } else if (key === 'images' && currentItem.imageFiles) {
-        currentItem.imageFiles.forEach(file => formData.append('images', file));
-      } else if ((key === 'video' || key === 'videoFile') && currentItem.videoFile) {
-        formData.append('video', currentItem.videoFile);
-      } else if (key !== 'image' && key !== 'imageFile' && key !== 'images' && key !== 'imageFiles' && key !== 'video' && key !== 'videoFile' && key !== '_id' && key !== '__v') {
+      if (!excludedKeys.includes(key)) {
         formData.append(key, currentItem[key]);
       }
     });
 
     if (activeTab === 'hospitalImages') {
       try {
-        const formData = new FormData();
-        formData.append('image', currentItem.imageFile);
+        const hospFormData = new FormData();
+        hospFormData.append('image', currentItem.imageFile);
         const res = await fetchWithAuth(`${API_BASE}/hospital-images/${currentItem.hospitalId}`, {
           method: 'POST',
-          body: formData
-        }, true);
-        if (res.ok) {
-          fetchData();
+          body: hospFormData
+        });
+        if (res && res.ok) {
+          fetchAllData();
           setShowModal(false);
           setCurrentItem(null);
+          setAlertState({ show: true, message: 'Hospital image saved successfully', type: 'success' });
+        } else {
+          setAlertState({ show: true, message: 'Failed to save hospital image', type: 'error' });
         }
       } catch (err) {
         console.error('Save failed', err);
-        alert('Error saving hospital image');
+        setAlertState({ show: true, message: 'Error saving hospital image', type: 'error' });
+      } finally {
+        setIsActionLoading(false);
+        setConfirmModal({ ...confirmModal, show: false });
       }
       return;
     }
@@ -190,10 +220,17 @@ export default function AdminDashboard() {
         fetchAllData();
         setAlertState({ show: true, message: 'Saved successfully', type: 'success' });
       } else {
-        const errData = await response.json();
-        setAlertState({ show: true, message: `Failed to save: ${errData.message || 'Unknown error'}`, type: 'error' });
+        let errMessage = 'Unknown error';
+        try {
+          const errData = await response.json();
+          errMessage = errData.message || errMessage;
+        } catch (e) {
+          console.error("Failed to parse error response", e);
+        }
+        setAlertState({ show: true, message: `Failed to save: ${errMessage}`, type: 'error' });
       }
     } catch (err) {
+      console.error('Error saving:', err);
       setAlertState({ show: true, message: 'Error saving', type: 'error' });
     } finally {
       setIsActionLoading(false);
@@ -681,8 +718,8 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Profile Image</label>
-                      <input type="file" accept="image/*" onChange={e => setCurrentItem({ ...currentItem, imageFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Profile Image <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
+                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90" />
                     </div>
                     <div>
                       <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Display Order</label>
@@ -712,13 +749,13 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Project Images (Max 3)</label>
-                      <input type="file" multiple accept="image/*" onChange={e => setCurrentItem({ ...currentItem, imageFiles: Array.from(e.target.files).slice(0, 3) })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Project Images (Max 3) <span className="text-red-400 lowercase normal-case">(Max 5MB each)</span></label>
+                      <input type="file" multiple accept="image/*" onChange={e => handleMultipleFilesChange(e, 'imageFiles', 5, 3)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Cloudinary Video</label>
-                        <input type="file" accept="video/*" onChange={e => setCurrentItem({ ...currentItem, videoFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                        <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Cloudinary Video <span className="text-red-400 lowercase normal-case">(Max 50MB)</span></label>
+                        <input type="file" accept="video/*" onChange={e => handleFileChange(e, 'videoFile', 50)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
                       </div>
                       <div>
                         <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">YouTube Link</label>
@@ -775,8 +812,8 @@ export default function AdminDashboard() {
                 ) : activeTab === 'heroSlides' ? (
                   <>
                     <div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Hero Background Image</label>
-                      <input type="file" accept="image/*" onChange={e => setCurrentItem({ ...currentItem, imageFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
+                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 block">Hero Background Image <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
+                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
                     </div>
 
 
@@ -812,8 +849,8 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">News Image / Clipping</label>
-                      <input type="file" accept="image/*" onChange={e => setCurrentItem({ ...currentItem, imageFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">News Image / Clipping <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
+                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white" />
                     </div>
                     <div>
                       <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
@@ -841,8 +878,8 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Video</label>
-                      <input type="file" accept="video/*" onChange={e => setCurrentItem({ ...currentItem, videoFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Video <span className="text-red-400 lowercase normal-case">(Max 50MB)</span></label>
+                      <input type="file" accept="video/*" onChange={e => handleFileChange(e, 'videoFile', 50)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
                     </div>
                     <div>
                       <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
@@ -866,8 +903,8 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Image</label>
-                      <input type="file" accept="image/*" onChange={e => setCurrentItem({ ...currentItem, imageFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                      <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Upload Image <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
+                      <input type="file" accept="image/*" onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
                     </div>
                     <div>
                       <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Description (EN)</label>
@@ -880,8 +917,8 @@ export default function AdminDashboard() {
                   </>
                 ) : activeTab === 'hospitalImages' ? (
                   <div>
-                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Select New Image</label>
-                    <input type="file" accept="image/*" required onChange={e => setCurrentItem({ ...currentItem, imageFile: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
+                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Select New Image <span className="text-red-400 lowercase normal-case">(Max 5MB)</span></label>
+                    <input type="file" accept="image/*" required onChange={e => handleFileChange(e, 'imageFile', 5)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-50 file:text-blue-700" />
                   </div>
                 ) : (
                   <>

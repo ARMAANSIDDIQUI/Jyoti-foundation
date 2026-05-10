@@ -47,11 +47,13 @@ export default function Donate() {
         </motion.div>
 
 
+        {/* 
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {donationOptions.map((option) => (
             <DonationCard key={option.id} option={option} />
           ))}
-        </div>
+        </div> 
+        */}
 
         <div className="grid md:grid-cols-2 gap-8 mb-16 max-w-5xl mx-auto">
           {/* UPI Payment Card */}
@@ -67,8 +69,8 @@ export default function Donate() {
             <p className="text-gray-600 mb-8">{t('donate.upiDesc')}</p>
 
             
-            <div className="bg-blue-50 px-6 py-3 rounded-xl border border-blue-100 flex items-center gap-3">
-              <span className="text-sm font-bold text-blue-700 select-all">jyoti.foundation@upi</span>
+            <div className="bg-orange-50 px-6 py-3 rounded-xl border border-orange-100 flex items-center justify-center">
+              <span className="text-sm font-bold text-orange-700 text-center">UPI will be available soon</span>
             </div>
           </motion.div>
 
@@ -107,6 +109,7 @@ export default function Donate() {
           </motion.div>
         </div>
 
+        {/* 
         <div className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 max-w-4xl mx-auto text-center mt-12">
           <h2 className="font-heading text-2xl font-bold mb-6 flex items-center justify-center gap-3">
             <Info className="w-6 h-6 text-primary" /> {t('donate.taxInfoTitle')}
@@ -117,7 +120,8 @@ export default function Donate() {
           <Link to="/contact" className="inline-block bg-primary text-white font-bold px-10 py-4 rounded-full shadow-md hover:shadow-lg transition-all">
             {t('donate.contactReceipt')}
           </Link>
-        </div>
+        </div> 
+        */}
 
 
       </div>
