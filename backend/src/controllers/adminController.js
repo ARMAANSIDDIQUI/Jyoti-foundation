@@ -27,20 +27,4 @@ exports.login = async (req, res) => {
   }
 };
 
-const mongoose = require('mongoose');
 
-exports.getDbStats = async (req, res) => {
-  try {
-    const stats = await mongoose.connection.db.stats();
-    // In Atlas free tier (M0), max storage is 512MB (536870912 bytes)
-    const MAX_STORAGE_BYTES = 536870912;
-    res.status(200).json({
-      ...stats,
-      maxStorageBytes: MAX_STORAGE_BYTES,
-      usedStorageBytes: stats.dataSize + stats.indexSize
-    });
-  } catch (error) {
-    console.error('DB Stats error:', error);
-    res.status(500).json({ message: 'Error fetching database stats' });
-  }
-};
