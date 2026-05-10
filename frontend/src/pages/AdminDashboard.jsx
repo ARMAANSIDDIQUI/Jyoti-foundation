@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   LayoutDashboard, Users, FolderHeart, MessageSquare, Newspaper,
-  LogOut, Plus, Trash2, Edit2, Save, X, Loader2, Check, ExternalLink, Image as ImageIcon, Target, User, Menu, Video, Images, Building2
+  LogOut, Plus, Trash2, Edit2, Save, X, Loader2, Check, ExternalLink, Image as ImageIcon, Target, User, Menu, Video, Images, Building2, Database
 } from 'lucide-react';
 import { hospitals } from '../data/placeholderData';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +20,7 @@ export default function AdminDashboard() {
   const { logout, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  const [data, setData] = useState({ members: [], projects: [], contacts: [], stats: [], categories: [], heroSlides: [], newsCoverage: [], videos: [], galleryImages: [], hospitalImages: [] });
+  const [data, setData] = useState({ members: [], projects: [], contacts: [], stats: [], categories: [], heroSlides: [], newsCoverage: [], videos: [], galleryImages: [], hospitalImages: [], dbStats: null });
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
@@ -75,7 +75,7 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const fetchOpts = { headers: getAuthHeader() };
-      const [members, projects, contacts, stats, categories, heroSlides, newsCoverage, videos, galleryImages, hospitalImages] = await Promise.all([
+      const [members, projects, contacts, stats, categories, heroSlides, newsCoverage, videos, galleryImages, hospitalImages, dbStats] = await Promise.all([
         fetchWithAuth(`${API_BASE}/members`).then(r => r ? r.json() : []),
         fetchWithAuth(`${API_BASE}/projects`).then(r => r ? r.json() : []),
         fetchWithAuth(`${API_BASE}/contact`).then(r => r ? r.json() : []),
@@ -86,6 +86,7 @@ export default function AdminDashboard() {
         fetchWithAuth(`${API_BASE}/videos`).then(r => r ? r.json() : []),
         fetchWithAuth(`${API_BASE}/gallery-images`).then(r => r ? r.json() : []),
         fetchWithAuth(`${API_BASE}/hospital-images`).then(r => r ? r.json() : []),
+        fetchWithAuth(`${API_BASE}/admin/db-stats`).then(r => r ? r.json() : null),
       ]);
       setData({
         members: Array.isArray(members) ? members : [],
@@ -97,7 +98,8 @@ export default function AdminDashboard() {
         newsCoverage: Array.isArray(newsCoverage) ? newsCoverage : [],
         videos: Array.isArray(videos) ? videos : [],
         galleryImages: Array.isArray(galleryImages) ? galleryImages : [],
-        hospitalImages: Array.isArray(hospitalImages) ? hospitalImages : []
+        hospitalImages: Array.isArray(hospitalImages) ? hospitalImages : [],
+        dbStats: dbStats
       });
     } catch (err) {
       console.error('Fetch error:', err);
@@ -320,7 +322,7 @@ export default function AdminDashboard() {
         ) : (
           <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 min-h-[500px]">
             {activeTab === 'dashboard' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div className="p-8 bg-blue-50 rounded-3xl border border-blue-100">
                   <div className="flex justify-between items-start mb-4">
                     <div className="p-3 bg-blue-100 rounded-2xl text-blue-600">
@@ -339,10 +341,33 @@ export default function AdminDashboard() {
                   <h3 className="text-green-700 font-bold text-lg mb-1">Total Projects</h3>
                   <p className="text-4xl font-bold text-green-900">{data.projects.length}</p>
                 </div>
-                <div className="p-8 bg-purple-50 rounded-3xl border border-purple-100 text-center flex flex-col items-center justify-center">
-                   <h3 className="text-purple-700 font-bold text-lg mb-1">News Coverage</h3>
-                   <p className="text-4xl font-bold text-purple-900">{data.newsCoverage.length}</p>
+                <div className="p-8 bg-purple-50 rounded-3xl border border-purple-100">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-purple-100 rounded-2xl text-purple-600">
+                      <Newspaper className="w-6 h-6" />
+                    </div>
+                  </div>
+                  <h3 className="text-purple-700 font-bold text-lg mb-1">News Coverage</h3>
+                  <p className="text-4xl font-bold text-purple-900">{data.newsCoverage.length}</p>
                 </div>
+                {data.dbStats && (
+                  <div className="p-8 bg-orange-50 rounded-3xl border border-orange-100">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="p-3 bg-orange-100 rounded-2xl text-orange-600">
+                        <Database className="w-6 h-6" />
+                      </div>
+                    </div>
+                    <h3 className="text-orange-700 font-bold text-lg mb-1">Database Space</h3>
+                    <div className="flex flex-col gap-2">
+                      <div className="w-full bg-orange-200 rounded-full h-2.5">
+                        <div className="bg-orange-600 h-2.5 rounded-full" style={{ width: `${Math.min(100, (data.dbStats.usedStorageBytes / data.dbStats.maxStorageBytes) * 100)}%` }}></div>
+                      </div>
+                      <p className="text-orange-900 text-sm font-medium">
+                        {(data.dbStats.usedStorageBytes / (1024 * 1024)).toFixed(2)} MB used of {(data.dbStats.maxStorageBytes / (1024 * 1024)).toFixed(0)} MB
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
